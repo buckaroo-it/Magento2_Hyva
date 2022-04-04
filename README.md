@@ -17,4 +17,4 @@
 
 - IDeal
 - PayPal
-- Creditcard (Still in progress!)
+- Creditcard
