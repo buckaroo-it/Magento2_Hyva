@@ -69,18 +69,23 @@ function IDeal({ method, actions }) {
 
   return (
     <>
-      <div className="title flex justify-between">
+      <div className="title flex">
         <RadioInput
           value={method.code}
-          label={method.title}
           name="paymentMethod"
           onChange={onChange}
           checked={method.code === paymentValues.code}
         />
+        <div className="text">
+          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+          <label htmlFor={`paymentMethod_${method.code}`}>iDEAL</label>
+          <div className="cta">{__('Most often chosen')}</div>
+          <div className="description">{__('Pay with online banking')}</div>
+        </div>
 
-        <img src={idealLogo} className="w-12" alt="Ideal Logo" />
+        <img src={idealLogo} alt="Ideal Logo" />
       </div>
-      <div className="content py-2 px-10">
+      <div className="content">
         {method.code === paymentValues.code && (
           <>
             <select
@@ -99,7 +104,7 @@ function IDeal({ method, actions }) {
                 </option>
               ))}
             </select>
-            <p>{__("You'll be redirected to finish the payment.")}</p>
+            <small>{__("You'll be redirected to finish the payment.")}</small>
 
             <PlaceOrder />
           </>

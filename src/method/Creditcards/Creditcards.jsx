@@ -157,9 +157,9 @@ function Creditcards({ method, actions }) {
           checked={method.code === paymentValues.code}
         />
 
-        <img src={creditcardsLogo} className="w-12" alt="Creditcards Logo" />
+        <img src={creditcardsLogo} alt="Creditcards Logo" />
       </div>
-      <div className="content py-2 px-10">
+      <div className="content">
         {method.code === paymentValues.code && (
           <>
             <div className="field my-2">

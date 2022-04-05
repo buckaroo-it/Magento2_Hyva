@@ -71,9 +71,9 @@ function PayPal({ method, actions }) {
           checked={method.code === paymentValues.code}
         />
 
-        <img src={paypalLogo} className="w-12" alt="PayPal Logo" />
+        <img src={paypalLogo} alt="PayPal Logo" />
       </div>
-      <div className="content py-2 px-10">
+      <div className="content">
         {method.code === paymentValues.code && (
           <>
             <p>{__("You'll be redirected to finish the payment.")}</p>
