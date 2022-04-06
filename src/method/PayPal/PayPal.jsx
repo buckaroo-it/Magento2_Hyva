@@ -65,18 +65,24 @@ function PayPal({ method, actions }) {
       <div className="title flex justify-between">
         <RadioInput
           value={method.code}
-          label={method.title}
           name="paymentMethod"
           onChange={onChange}
           checked={method.code === paymentValues.code}
         />
 
+        <div className="text">
+          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+          <label htmlFor={`paymentMethod_${method.code}`}>{method.title}</label>
+          <div className="description">{__('Pay with your pal')}</div>
+        </div>
         <img src={paypalLogo} alt="PayPal Logo" />
       </div>
       <div className="content">
         {method.code === paymentValues.code && (
           <>
-            <p>{__("You'll be redirected to finish the payment.")}</p>
+            <p className="text-body-xs mt-4">
+              {__("You'll be redirected to finish the payment.")}
+            </p>
 
             <PlaceOrder />
           </>

@@ -78,14 +78,14 @@ function IDeal({ method, actions }) {
         />
         <div className="text">
           {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-          <label htmlFor={`paymentMethod_${method.code}`}>iDEAL</label>
+          <label htmlFor={`paymentMethod_${method.code}`}>{method.title}</label>
           <div className="cta">{__('Most often chosen')}</div>
           <div className="description">{__('Pay with online banking')}</div>
         </div>
 
         <img src={idealLogo} alt="Ideal Logo" />
       </div>
-      <div className="content">
+      <div className="content pt-4">
         {method.code === paymentValues.code && (
           <>
             <select
