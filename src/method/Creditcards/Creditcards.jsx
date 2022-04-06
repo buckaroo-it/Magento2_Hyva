@@ -163,8 +163,8 @@ function Creditcards({ method, actions }) {
 
         <img src={creditcardsLogo} alt="Creditcards Logo" />
       </div>
-      <div className="content">
-        {method.code === paymentValues.code && (
+      {method.code === paymentValues.code && (
+        <div className="content">
           <div className="form-control">
             <div className="field my-2">
               <label className="label" htmlFor="issuer">
@@ -240,8 +240,8 @@ function Creditcards({ method, actions }) {
 
             <PlaceOrder />
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </>
   );
 }

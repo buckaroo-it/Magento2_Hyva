@@ -85,31 +85,29 @@ function IDeal({ method, actions }) {
 
         <img src={idealLogo} alt="Ideal Logo" />
       </div>
-      <div className="content pt-4">
-        {method.code === paymentValues.code && (
-          <>
-            <select
-              onChange={(e) => {
-                onChange(e.target.value);
-              }}
-              className="form-select"
-              name="issuer"
-            >
-              <option disabled value="">
-                {__('Choose issuer')}
+      {method.code === paymentValues.code && (
+        <div className="content pt-4">
+          <select
+            onChange={(e) => {
+              onChange(e.target.value);
+            }}
+            className="form-select"
+            name="issuer"
+          >
+            <option disabled value="">
+              {__('Choose issuer')}
+            </option>
+            {paymentMethods.map((issuer) => (
+              <option value={issuer.code} key={issuer.code}>
+                {issuer.name}
               </option>
-              {paymentMethods.map((issuer) => (
-                <option value={issuer.code} key={issuer.code}>
-                  {issuer.name}
-                </option>
-              ))}
-            </select>
-            <small>{__("You'll be redirected to finish the payment.")}</small>
+            ))}
+          </select>
+          <small>{__("You'll be redirected to finish the payment.")}</small>
 
-            <PlaceOrder />
-          </>
-        )}
-      </div>
+          <PlaceOrder />
+        </div>
+      )}
     </>
   );
 }
