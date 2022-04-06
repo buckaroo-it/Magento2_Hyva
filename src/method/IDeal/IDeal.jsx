@@ -83,7 +83,7 @@ function IDeal({ method, actions }) {
           <div className="description">{__('Pay with online banking')}</div>
         </div>
 
-        <img src={idealLogo} alt="Ideal Logo" />
+        <img height="24px" width="24px" src={idealLogo} alt="Ideal Logo" />
       </div>
       {method.code === paymentValues.code && (
         <div className="content pt-4">

@@ -75,7 +75,7 @@ function PayPal({ method, actions }) {
           <label htmlFor={`paymentMethod_${method.code}`}>{method.title}</label>
           <div className="description">{__('Pay quick and secure')}</div>
         </div>
-        <img src={paypalLogo} alt="PayPal Logo" />
+        <img height="24px" width="24px" src={paypalLogo} alt="PayPal Logo" />
       </div>
       {method.code === paymentValues.code && (
         <div className="content">

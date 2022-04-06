@@ -161,7 +161,12 @@ function Creditcards({ method, actions }) {
           <div className="description">{__('Pay with your card')}</div>
         </div>
 
-        <img src={creditcardsLogo} alt="Creditcards Logo" />
+        <img
+          height="24px"
+          width="24px"
+          src={creditcardsLogo}
+          alt="Creditcards Logo"
+        />
       </div>
       {method.code === paymentValues.code && (
         <div className="content">
