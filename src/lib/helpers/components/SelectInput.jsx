@@ -74,7 +74,6 @@ const optionShapeObject = shape({
 SelectInput.propTypes = {
   className: string,
   name: string.isRequired,
-  type: string.isRequired,
   label: string.isRequired,
   value: string.isRequired,
   onChange: func.isRequired,

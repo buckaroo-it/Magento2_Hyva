@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { object } from 'prop-types';
 import _set from 'lodash.set';
 
@@ -7,6 +7,7 @@ import Card from '@hyva/react-checkout/components/common/Card';
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
 import useAppContext from '@hyva/react-checkout/hook/useAppContext';
 import { scrollToElement } from '@hyva/react-checkout/utils/form';
+import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
 import { __ } from '@hyva/react-checkout/i18n';
 
 import useOnSubmit from '../../lib/hooks/useOnSubmit';
@@ -44,7 +45,12 @@ function Bancontact({ method, selected, actions }) {
 
   const [methodState, setMethodState] = useState({
     clientSideMode: 'cc',
-    formData: {},
+    formData: {
+      cardholder: '',
+      cardnumber: '',
+      expirationmonth: '',
+      expirationyear: '',
+    },
     formValid: false,
   });
 
@@ -72,7 +78,6 @@ function Bancontact({ method, selected, actions }) {
         return;
       }
       const encryptedCardData = await encrypt(formData);
-      console.log(encryptedCardData, formData);
       _set(values, ADDITIONAL_DATA_KEY, {
         client_side_mode: clientSideMode,
         customer_encrypteddata: encryptedCardData,
@@ -86,11 +91,17 @@ function Bancontact({ method, selected, actions }) {
     registerPaymentAction(method.code, placeOrderWithBancontact);
   }, [method, registerPaymentAction, placeOrderWithBancontact]);
 
+  const credicardForm = useMemo(
+    () => (
+      <CreditcardForm setStateFromForm={setStateFromForm} formData={formData} />
+    ),
+    [formData]
+  );
   return (
     <div id={selected.code}>
       {invoiceRadioInput}
       {useClientSide && (
-        <Card bg="darker">
+        <Card>
           <RadioInput
             value="cc"
             label={__('Bancontact card')}
@@ -109,11 +120,10 @@ function Bancontact({ method, selected, actions }) {
               setClientSideMode(e.target.value);
             }}
           />
-          {clientSideMode === 'cc' && (
-            <CreditcardForm setStateFromForm={setStateFromForm} />
-          )}
+          {clientSideMode === 'cc' && credicardForm}
         </Card>
       )}
+      <PlaceOrder />
     </div>
   );
 }

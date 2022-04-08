@@ -1,23 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { func } from 'prop-types';
+import { func, object } from 'prop-types';
 import { __ } from '@hyva/react-checkout/i18n';
 import TextInput from '../../lib/helpers/components/TextInput';
 import SelectInput from '../../lib/helpers/components/SelectInput';
 
 import BuckarooClientSideEncryption from '../../../assets/lib/ClientSideEncryption001';
 
-function CreditcardForm({ setStateFromForm }) {
+function CreditcardForm({ setStateFromForm, formData }) {
   const yearStart = new Date().getFullYear();
 
+  console.log('redraw credicard form');
   const range = (size, startAt = 0) =>
     [...Array(size).keys()].map((i) => i + startAt);
 
-  const [formState, setFormState] = useState({
-    cardholder: '',
-    cardnumber: '',
-    expirationmonth: '',
-    expirationyear: '',
-  });
+  const [formState, setFormState] = useState(formData);
 
   const { cardholder, cardnumber, expirationmonth, expirationyear } = formState;
   const [validationErrors, setvalidationErrors] = useState({});
@@ -115,4 +111,5 @@ export default CreditcardForm;
 
 CreditcardForm.propTypes = {
   setStateFromForm: func.isRequired,
+  formData: object.isRequired,
 };

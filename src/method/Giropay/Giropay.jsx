@@ -6,12 +6,12 @@ import Card from '@hyva/react-checkout/components/common/Card';
 import RadioInput from '@hyva/react-checkout/components/common/Form/RadioInput';
 import { __ } from '@hyva/react-checkout/i18n';
 import { scrollToElement } from '@hyva/react-checkout/utils/form';
-
+import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
 import useAppContext from '@hyva/react-checkout/hook/useAppContext';
+
 import TextInput from '../../lib/helpers/components/TextInput';
 import useOnSubmit from '../../lib/hooks/useOnSubmit';
-
 import { ADDITIONAL_DATA_KEY } from '../../lib/helpers/AdditionalBuckarooDataKey';
 
 function Giropay({ method, selected, actions }) {
@@ -77,19 +77,18 @@ function Giropay({ method, selected, actions }) {
   return (
     <div id={selected.code}>
       {invoiceRadioInput}
-      <div className="mx-4 my-4">
-        <Card bg="darker">
-          <TextInput
-            className="w-full"
-            name="bic"
-            type="text"
-            label={__('BIC:')}
-            value={bic}
-            onChange={(e) => setBic(e.target.value)}
-            error={validationErrors.bic}
-          />
-        </Card>
-      </div>
+      <Card>
+        <TextInput
+          className="w-full"
+          name="bic"
+          type="text"
+          label={__('BIC:')}
+          value={bic}
+          onChange={(e) => setBic(e.target.value)}
+          error={validationErrors.bic}
+        />
+      </Card>
+      <PlaceOrder />
     </div>
   );
 }
