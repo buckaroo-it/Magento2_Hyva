@@ -1,52 +1,21 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { func, shape, object } from 'prop-types';
-import _get from 'lodash.get';
+import _set from 'lodash.set';
 
 import Card from '@hyva/react-checkout/components/common/Card';
 import RadioInput from '@hyva/react-checkout/components/common/Form/RadioInput';
-import TextInput from '@hyva/react-checkout/components/common/Form/TextInput';
 import { __ } from '@hyva/react-checkout/i18n';
+import { scrollToElement } from '@hyva/react-checkout/utils/form';
 
-import { PAYMENT_METHOD_FORM } from '@hyva/react-checkout/config';
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
-import usePaymentMethodFormContext from '@hyva/react-checkout/components/paymentMethod/hooks/usePaymentMethodFormContext';
 import useAppContext from '@hyva/react-checkout/hook/useAppContext';
-import useOnSubmit from './hooks/useOnSubmit';
+import TextInput from '../../lib/helpers/components/TextInput';
+import useOnSubmit from '../../lib/hooks/useOnSubmit';
 
-const bicField = `${PAYMENT_METHOD_FORM}.additional_data.customer_bic`;
+import { ADDITIONAL_DATA_KEY } from '../../lib/helpers/AdditionalBuckarooDataKey';
 
 function Giropay({ method, selected, actions }) {
-  const { formikData } = usePaymentMethodFormContext();
-  const { registerPaymentAction } = useCheckoutFormContext();
-  const { setErrorMessage } = useAppContext();
-  const onSubmit = useOnSubmit();
-
   const isSelected = method.code === selected.code;
-  const validateBic = (value) => {
-    let error;
-
-    if (value === undefined || value.length === 0) {
-      error = __('Bic is required');
-    }
-    return error;
-  };
-
-  const placeOrderWithGiropay = useCallback(
-    async (values) => {
-      const error = validateBic(_get(values, bicField));
-
-      if (error !== undefined) {
-        setErrorMessage(error);
-        return;
-      }
-      await onSubmit(values);
-    },
-    [onSubmit, setErrorMessage]
-  );
-
-  useEffect(() => {
-    registerPaymentAction(method.code, placeOrderWithGiropay);
-  }, [method, registerPaymentAction, placeOrderWithGiropay]);
 
   const invoiceRadioInput = (
     <RadioInput
@@ -62,19 +31,63 @@ function Giropay({ method, selected, actions }) {
     return invoiceRadioInput;
   }
 
+  const { registerPaymentAction } = useCheckoutFormContext();
+  const { setErrorMessage } = useAppContext();
+  const onSubmit = useOnSubmit();
+
+  const [bic, setBic] = useState('');
+  const [validationErrors, setvalidationErrors] = useState({});
+
+  const validateBic = () => {
+    const err = {};
+
+    if (bic.trim().length === 0) {
+      err.bic = __('Bic is required');
+    }
+    setvalidationErrors(err);
+  };
+
+  const placeOrderWithGiropay = useCallback(
+    async (values) => {
+      validateBic();
+
+      if (Object.keys(validationErrors).length !== 0) {
+        setErrorMessage(__('One or more fields are required'));
+        scrollToElement(selected.code);
+        return;
+      }
+
+      _set(values, ADDITIONAL_DATA_KEY, {
+        customer_bic: bic,
+      });
+
+      await onSubmit(values);
+    },
+    [onSubmit, setErrorMessage, validationErrors]
+  );
+
+  useEffect(() => {
+    validateBic();
+  }, [bic]);
+
+  useEffect(() => {
+    registerPaymentAction(method.code, placeOrderWithGiropay);
+  }, [method, registerPaymentAction, placeOrderWithGiropay]);
+
   return (
-    <div>
+    <div id={selected.code}>
       {invoiceRadioInput}
       <div className="mx-4 my-4">
         <Card bg="darker">
-          <div className="container flex flex-col justify-center w-4/5">
-            <TextInput
-              label={__('BIC:')}
-              name={bicField}
-              required
-              formikData={formikData}
-            />
-          </div>
+          <TextInput
+            className="w-full"
+            name="bic"
+            type="text"
+            label={__('BIC:')}
+            value={bic}
+            onChange={(e) => setBic(e.target.value)}
+            error={validationErrors.bic}
+          />
         </Card>
       </div>
     </div>

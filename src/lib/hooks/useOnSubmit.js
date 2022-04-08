@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import useAppContext from '@hyva/react-checkout/hook/useAppContext';
-import { GetBuckarooPaymentInformation } from '../../../lib/BuckarooPaymentMethod';
+import { GetBuckarooPaymentInformation } from '../BuckarooPaymentMethod';
 
 export default function useOnSubmit() {
   const { isLoggedIn, setPageLoader, setErrorMessage, dispatch } =
