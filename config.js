@@ -15,3 +15,7 @@ export function getConfigPaypal() {
   const KEY = 'payment.buckaroo.paypal';
   return _get(RootElement.getCheckoutConfig(), KEY);
 }
+export function getConfig(key) {
+  const path = `payment.buckaroo.${key}`;
+  return _get(RootElement.getCheckoutConfig(), path);
+}
