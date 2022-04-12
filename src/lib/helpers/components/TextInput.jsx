@@ -12,25 +12,23 @@ function TextInput({
   rest = {},
 }) {
   return (
-    <>
-      <div className={`field my-2 ${className}`}>
-        <div>
-          <label className="label" htmlFor={name}>
-            {label}
-          </label>
-        </div>
-        <input
-          className={`form-input w-full ${error ? 'border-red-500' : ''}`}
-          type={type}
-          name={name}
-          id={name}
-          value={value}
-          onChange={onChange}
-          {...rest}
-        />
-        {error && <div className="text-red-500 text-xs italic">{error}</div>}
+    <div className={`field my-2 ${className}`}>
+      <div>
+        <label className="label" htmlFor={name}>
+          {label}
+        </label>
       </div>
-    </>
+      <input
+        className={`form-input w-full ${error ? 'border-red-500' : ''}`}
+        type={type}
+        name={name}
+        id={name}
+        value={value}
+        onChange={onChange}
+        {...rest}
+      />
+      {error && <div className="text-red-500 text-xs italic">{error}</div>}
+    </div>
   );
 }
 

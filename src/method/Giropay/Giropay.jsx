@@ -13,18 +13,22 @@ import useAppContext from '@hyva/react-checkout/hook/useAppContext';
 import TextInput from '../../lib/helpers/components/TextInput';
 import useOnSubmit from '../../lib/hooks/useOnSubmit';
 import { ADDITIONAL_DATA_KEY } from '../../lib/helpers/AdditionalBuckarooDataKey';
+import logo from '../../../assets/Giropay.svg';
 
 function Giropay({ method, selected, actions }) {
   const isSelected = method.code === selected.code;
 
   const invoiceRadioInput = (
-    <RadioInput
-      value={method.code}
-      label={method.title}
-      name="paymentMethod"
-      checked={isSelected}
-      onChange={actions.change}
-    />
+    <div className="title flex justify-between">
+      <RadioInput
+        value={method.code}
+        label={method.title}
+        name="paymentMethod"
+        checked={isSelected}
+        onChange={actions.change}
+      />
+      <img src={logo} className="w-12" alt={method.title} />
+    </div>
   );
 
   if (!isSelected) {

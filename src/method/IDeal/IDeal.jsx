@@ -11,9 +11,9 @@ import useCheckoutFormAppContext from '@hyva/react-checkout/components/CheckoutF
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
 import { __ } from '@hyva/react-checkout/i18n';
 import { SetPaymentMethod } from '../../lib/PaymentMethod';
-import { getConfigIdeal } from '../../../config';
+import { getConfig } from '../../../config';
 import useOnSubmit from './hooks/useOnSubmit';
-import idealLogo from '../../../assets/ideal.svg';
+import logo from '../../../assets/iDEAL.svg';
 
 const PAYMENT_METHOD_CODE = 'buckaroo_magento2_ideal';
 
@@ -29,7 +29,7 @@ function IDeal({ method, actions }) {
   const { paymentValues } = formikData;
   const { change } = actions;
 
-  const idealConfig = getConfigIdeal();
+  const idealConfig = getConfig('ideal');
   const paymentMethods = idealConfig.banks;
   const [selectedIssuer, setSelectedIssuer] = useState(null);
 
@@ -78,7 +78,7 @@ function IDeal({ method, actions }) {
           checked={method.code === paymentValues.code}
         />
 
-        <img src={idealLogo} className="w-12" alt="Ideal Logo" />
+        <img src={logo} className="w-12" alt="Ideal Logo" />
       </div>
       <div className="content py-2 px-10">
         {method.code === paymentValues.code && (

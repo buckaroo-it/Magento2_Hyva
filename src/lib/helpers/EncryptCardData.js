@@ -1,6 +1,6 @@
 import BuckarooClientSideEncryption from '../../../assets/lib/ClientSideEncryption001';
 
-const encrypt = async ({
+const encryptCardData = async ({
   cardholder,
   cardnumber,
   expirationmonth,
@@ -19,4 +19,4 @@ const encrypt = async ({
       }
     );
   });
-export default encrypt;
+export default encryptCardData;

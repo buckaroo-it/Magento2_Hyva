@@ -11,10 +11,10 @@ import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
 import { __ } from '@hyva/react-checkout/i18n';
 
 import useOnSubmit from '../../lib/hooks/useOnSubmit';
-import idealLogo from '../../../assets/ideal.svg';
+import logo from '../../../assets/Bancontact.svg';
 import { getConfig } from '../../../config';
 import CreditcardForm from './CreditcardForm';
-import encrypt from '../../lib/helpers/Encrypt';
+import encryptCardData from '../../lib/helpers/EncryptCardData';
 import { ADDITIONAL_DATA_KEY } from '../../lib/helpers/AdditionalBuckarooDataKey';
 
 function Bancontact({ method, selected, actions }) {
@@ -29,7 +29,7 @@ function Bancontact({ method, selected, actions }) {
         checked={isSelected}
         onChange={actions.change}
       />
-      <img src={idealLogo} className="w-12" alt="Ideal Logo" />
+      <img src={logo} className="w-12" alt={method.title} />
     </div>
   );
 
@@ -77,7 +77,7 @@ function Bancontact({ method, selected, actions }) {
         scrollToElement(selected.code);
         return;
       }
-      const encryptedCardData = await encrypt(formData);
+      const encryptedCardData = await encryptCardData(formData);
       _set(values, ADDITIONAL_DATA_KEY, {
         client_side_mode: clientSideMode,
         customer_encrypteddata: encryptedCardData,
