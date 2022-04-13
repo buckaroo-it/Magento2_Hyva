@@ -9,7 +9,6 @@ import BuckarooClientSideEncryption from '../../../assets/lib/ClientSideEncrypti
 function CreditcardForm({ setStateFromForm, formData }) {
   const yearStart = new Date().getFullYear();
 
-  console.log('redraw credicard form');
   const range = (size, startAt = 0) =>
     [...Array(size).keys()].map((i) => i + startAt);
 

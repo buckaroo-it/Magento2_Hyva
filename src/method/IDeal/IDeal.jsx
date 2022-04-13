@@ -13,7 +13,7 @@ import { __ } from '@hyva/react-checkout/i18n';
 import { SetPaymentMethod } from '../../lib/PaymentMethod';
 import { getConfig } from '../../../config';
 import useOnSubmit from './hooks/useOnSubmit';
-import logo from '../../../assets/iDEAL.svg';
+import logo from '../../../assets/Ideal.svg';
 
 const PAYMENT_METHOD_CODE = 'buckaroo_magento2_ideal';
 

@@ -20,7 +20,7 @@ function SelectInput({
   options,
   className = '',
   prependOption = null,
-  rest = {},
+  inputProps = {},
 }) {
   return (
     <div className={className}>
@@ -33,7 +33,7 @@ function SelectInput({
         id={name}
         value={value}
         onChange={onChange}
-        {...rest}
+        {...inputProps}
       >
         {prependOption}
         {options.map((option) => {
@@ -73,12 +73,12 @@ SelectInput.propTypes = {
   options: arrayOf(oneOfType([string, number, optionShapeObject])).isRequired,
   error: string,
   prependOption: node,
-  rest: object,
+  inputProps: object,
 };
 
 SelectInput.defaultProps = {
   className: '',
   error: null,
-  rest: {},
+  inputProps: {},
   prependOption: null,
 };
