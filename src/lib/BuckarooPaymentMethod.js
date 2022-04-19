@@ -1,3 +1,6 @@
+import { config } from '@hyva/react-checkout/config';
+import LocalStorage from '@hyva/react-checkout/utils/localStorage';
+
 import restBuckarooGuestPaymentInformation from './api/restBuckarooGuestPaymentInformation';
 import restBuckarooPaymentInformation from './api/restBuckarooPaymentInformation';
 import { IsCustomer } from './helpers/Customer';
@@ -24,6 +27,14 @@ export async function GetBuckarooPaymentInformation(
 
   let resp = await call(dispatch, body);
   resp = JSON.parse(resp);
+
+  if (resp.order_number) {
+    LocalStorage.clearCheckoutStorage();
+  }
+
+  if (resp.order_number && config.isProductionMode) {
+    window.location.replace(config.successPageRedirectUrl);
+  }
 
   if (resp.RequiredAction && resp.RequiredAction.RedirectURL) {
     window.location.href = resp.RequiredAction.RedirectURL;
