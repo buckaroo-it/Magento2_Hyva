@@ -14,7 +14,7 @@ const encryptCardData = async ({
       expirationmonth,
       cvc,
       cardholder,
-      (encryptedCardData) => resolve(encryptedCardData)
+      resolve
     );
   });
 export default encryptCardData;
