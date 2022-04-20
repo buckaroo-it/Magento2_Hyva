@@ -57,25 +57,27 @@ function Bancontact({ method, selected, actions }) {
     validationSchema,
   });
 
+  const { validateForm, submitForm, values: formikValues } = formik;
+
   const placeOrderWithBancontact = useCallback(
     async (values) => {
       if (clientSideMode === 'cc') {
-        const errors = await formik.validateForm();
-        formik.submitForm();
+        const errors = await validateForm();
+        submitForm();
         if (Object.keys(errors).length) {
           setErrorMessage(__('One or more fields are required'));
           scrollToElement(selected.code);
           return;
         }
       }
-      const encryptedCardData = await encryptCardData(formik.values);
+      const encryptedCardData = await encryptCardData(formikValues);
       _set(values, ADDITIONAL_DATA_KEY, {
         client_side_mode: clientSideMode,
         customer_encrypteddata: encryptedCardData,
       });
       await onSubmit(values);
     },
-    [onSubmit, setErrorMessage, clientSideMode, formik.values]
+    [onSubmit, setErrorMessage, clientSideMode, formikValues]
   );
 
   useEffect(() => {
