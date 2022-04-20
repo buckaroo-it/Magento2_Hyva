@@ -11,6 +11,7 @@ import { formatPrice } from '@hyva/react-checkout/utils/price';
 import restAddPartialPaymentTransaction from '../../lib/api/restAddPartialPaymentTransaction/restAddPartialPaymentTransaction';
 import useUpdatePartialPaymentList from '../../lib/helpers/PartialPayments/UpdatePartialPaymentList';
 import usePlaceBuckarooOrder from '../../lib/helpers/PartialPayments/PlaceOrder';
+import TextInput from '../../lib/helpers/components/TextInput';
 
 function GiftcardForm({ giftcardCode }) {
   const { appDispatch } = useAppContext();
@@ -59,40 +60,20 @@ function GiftcardForm({ giftcardCode }) {
 
   return (
     <>
-      <div className="field my-2">
-        <label htmlFor="cardnumber">{__('Card number:')}</label>
-        <input
-          id="cardnumber"
-          className={`form-input w-full ${
-            formik.touched.cardnumber && formik.errors.cardnumber
-              ? 'border-red-500'
-              : ''
-          }`}
-          name="cardnumber"
-          type="text"
-          {...formik.getFieldProps('cardnumber')}
-        />
-        {formik.touched.cardnumber && formik.errors.cardnumber ? (
-          <div className="text-red-500 text-xs italic">
-            {formik.errors.cardnumber}
-          </div>
-        ) : null}
-      </div>
-      <div className="field my-2">
-        <label htmlFor="pin">{__('PIN / Security code:')}</label>
-        <input
-          id="pin"
-          className={`form-input w-full ${
-            formik.touched.pin && formik.errors.pin ? 'border-red-500' : ''
-          }`}
-          name="pin"
-          type="text"
-          {...formik.getFieldProps('pin')}
-        />
-        {formik.touched.pin && formik.errors.pin ? (
-          <div className="text-red-500 text-xs italic">{formik.errors.pin}</div>
-        ) : null}
-      </div>
+      <TextInput
+        className="w-full"
+        name="cardnumber"
+        type="text"
+        label={__('Card number:')}
+        formik={formik}
+      />
+      <TextInput
+        className="w-full"
+        name="pin"
+        type="text"
+        label={__('PIN / Security code:')}
+        formik={formik}
+      />
 
       <div className="field my-2">
         <button
