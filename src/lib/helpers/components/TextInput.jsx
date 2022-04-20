@@ -1,15 +1,13 @@
 import React from 'react';
-import { string, func, object } from 'prop-types';
+import { string, object } from 'prop-types';
 
 function TextInput({
   name,
   type,
   label,
-  value,
-  onChange,
-  error,
   className = '',
-  rest = {},
+  formik,
+  inputProps = {},
 }) {
   return (
     <div className={`field my-2 ${className}`}>
@@ -19,15 +17,18 @@ function TextInput({
         </label>
       </div>
       <input
-        className={`form-input w-full ${error ? 'border-red-500' : ''}`}
+        className={`form-input w-full ${
+          formik.touched[name] && formik.errors[name] ? 'border-red-500' : ''
+        }`}
         type={type}
         name={name}
         id={name}
-        value={value}
-        onChange={onChange}
-        {...rest}
+        {...formik.getFieldProps(name)}
+        {...inputProps}
       />
-      {error && <div className="text-red-500 text-xs italic">{error}</div>}
+      {formik.touched[name] && formik.errors[name] ? (
+        <div className="text-red-500 text-xs italic">{formik.errors[name]}</div>
+      ) : null}
     </div>
   );
 }
@@ -39,14 +40,11 @@ TextInput.propTypes = {
   name: string.isRequired,
   type: string.isRequired,
   label: string.isRequired,
-  value: string.isRequired,
-  onChange: func.isRequired,
-  error: string,
-  rest: object,
+  formik: object.isRequired,
+  inputProps: object,
 };
 
 TextInput.defaultProps = {
   className: '',
-  error: null,
-  rest: {},
+  inputProps: {},
 };

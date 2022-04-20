@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   string,
-  func,
   object,
   oneOfType,
   shape,
@@ -14,11 +13,9 @@ import isObject from '../IsObject';
 function SelectInput({
   name,
   label,
-  value,
-  onChange,
-  error,
   options,
   className = '',
+  formik,
   prependOption = null,
   inputProps = {},
 }) {
@@ -28,11 +25,12 @@ function SelectInput({
         {label}
       </label>
       <select
-        className={`form-input w-full ${error ? 'border-red-500' : ''}`}
+        className={`form-input w-full ${
+          formik.touched[name] && formik.errors[name] ? 'border-red-500' : ''
+        }`}
         name={name}
         id={name}
-        value={value}
-        onChange={onChange}
+        {...formik.getFieldProps(name)}
         {...inputProps}
       >
         {prependOption}
@@ -52,7 +50,9 @@ function SelectInput({
           );
         })}
       </select>
-      {error && <div className="text-red-500 text-xs italic">{error}</div>}
+      {formik.touched[name] && formik.errors[name] ? (
+        <div className="text-red-500 text-xs italic">{formik.errors[name]}</div>
+      ) : null}
     </div>
   );
 }
@@ -68,17 +68,14 @@ SelectInput.propTypes = {
   className: string,
   name: string.isRequired,
   label: string.isRequired,
-  value: string.isRequired,
-  onChange: func.isRequired,
   options: arrayOf(oneOfType([string, number, optionShapeObject])).isRequired,
-  error: string,
+  formik: object.isRequired,
   prependOption: node,
   inputProps: object,
 };
 
 SelectInput.defaultProps = {
   className: '',
-  error: null,
   inputProps: {},
   prependOption: null,
 };
