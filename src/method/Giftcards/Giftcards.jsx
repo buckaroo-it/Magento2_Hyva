@@ -68,7 +68,7 @@ function Giftcards({ method, selected, actions }) {
         cart.partial_payment.transactions.length &&
         cart.partial_payment.remainder_amount !== 0
       ) {
-        setErrorMessage(__('Cannot do payment with giftcards'));
+        setErrorMessage(__('Cannot pay with giftcards'));
         return;
       }
       _set(values, ADDITIONAL_DATA_KEY, {
