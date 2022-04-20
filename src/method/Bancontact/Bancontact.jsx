@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { object } from 'prop-types';
 import _set from 'lodash.set';
 
+import { useFormik } from 'formik';
+
 import RadioInput from '@hyva/react-checkout/components/common/Form/RadioInput';
-import Card from '@hyva/react-checkout/components/common/Card';
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
 import useAppContext from '@hyva/react-checkout/hook/useAppContext';
 import { scrollToElement } from '@hyva/react-checkout/utils/form';
@@ -16,6 +17,7 @@ import { getConfig } from '../../../config';
 import CreditcardForm from './CreditcardForm';
 import encryptCardData from '../../lib/helpers/EncryptCardData';
 import { ADDITIONAL_DATA_KEY } from '../../lib/helpers/AdditionalBuckarooDataKey';
+import { validationSchema } from './Validators';
 
 function Bancontact({ method, selected, actions }) {
   const isSelected = method.code === selected.code;
@@ -43,65 +45,48 @@ function Bancontact({ method, selected, actions }) {
 
   const useClientSide = getConfig('mrcash.useClientSide');
 
-  const [methodState, setMethodState] = useState({
-    clientSideMode: 'cc',
-    formData: {
+  const [clientSideMode, setClientSideMode] = useState('cc');
+
+  const formik = useFormik({
+    initialValues: {
       cardholder: '',
       cardnumber: '',
       expirationmonth: '',
       expirationyear: '',
     },
-    formValid: false,
+    validationSchema,
   });
-
-  const setClientSideMode = (checkboxClientSideMode) => {
-    setMethodState({
-      ...methodState,
-      clientSideMode: checkboxClientSideMode,
-    });
-  };
-  const setStateFromForm = (formIsValid, dataFromForm) => {
-    setMethodState({
-      ...methodState,
-      formData: dataFromForm,
-      formValid: formIsValid,
-    });
-  };
-
-  const { clientSideMode, formData, formValid } = methodState;
 
   const placeOrderWithBancontact = useCallback(
     async (values) => {
-      if (clientSideMode === 'cc' && !formValid) {
-        setErrorMessage(__('One or more fields are required'));
-        scrollToElement(selected.code);
-        return;
+      if (clientSideMode === 'cc') {
+        const errors = await formik.validateForm();
+        formik.submitForm();
+        if (Object.keys(errors).length) {
+          setErrorMessage(__('One or more fields are required'));
+          scrollToElement(selected.code);
+          return;
+        }
       }
-      const encryptedCardData = await encryptCardData(formData);
+      const encryptedCardData = await encryptCardData(formik.values);
       _set(values, ADDITIONAL_DATA_KEY, {
         client_side_mode: clientSideMode,
         customer_encrypteddata: encryptedCardData,
       });
       await onSubmit(values);
     },
-    [onSubmit, setErrorMessage, methodState]
+    [onSubmit, setErrorMessage, clientSideMode, formik.values]
   );
 
   useEffect(() => {
     registerPaymentAction(method.code, placeOrderWithBancontact);
   }, [method, registerPaymentAction, placeOrderWithBancontact]);
 
-  const credicardForm = useMemo(
-    () => (
-      <CreditcardForm setStateFromForm={setStateFromForm} formData={formData} />
-    ),
-    [formData]
-  );
   return (
     <div id={selected.code}>
       {invoiceRadioInput}
       {useClientSide && (
-        <Card>
+        <div className="p-2">
           <RadioInput
             value="cc"
             label={__('Bancontact card')}
@@ -120,8 +105,8 @@ function Bancontact({ method, selected, actions }) {
               setClientSideMode(e.target.value);
             }}
           />
-          {clientSideMode === 'cc' && credicardForm}
-        </Card>
+          {clientSideMode === 'cc' && <CreditcardForm formik={formik} />}
+        </div>
       )}
       <PlaceOrder />
     </div>

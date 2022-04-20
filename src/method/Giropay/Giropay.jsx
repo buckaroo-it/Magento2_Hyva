@@ -1,8 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { func, shape, object } from 'prop-types';
 import _set from 'lodash.set';
+import { useFormik } from 'formik';
+import { object as YupObject, string as YupString } from 'yup';
 
-import Card from '@hyva/react-checkout/components/common/Card';
 import RadioInput from '@hyva/react-checkout/components/common/Form/RadioInput';
 import { __ } from '@hyva/react-checkout/i18n';
 import { scrollToElement } from '@hyva/react-checkout/utils/form';
@@ -10,10 +11,10 @@ import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
 import useAppContext from '@hyva/react-checkout/hook/useAppContext';
 
-import TextInput from '../../lib/helpers/components/TextInput';
 import useOnSubmit from '../../lib/hooks/useOnSubmit';
 import { ADDITIONAL_DATA_KEY } from '../../lib/helpers/AdditionalBuckarooDataKey';
 import logo from '../../../assets/Giropay.svg';
+import TextInput from '../../lib/helpers/components/TextInput';
 
 function Giropay({ method, selected, actions }) {
   const isSelected = method.code === selected.code;
@@ -39,40 +40,37 @@ function Giropay({ method, selected, actions }) {
   const { setErrorMessage } = useAppContext();
   const onSubmit = useOnSubmit();
 
-  const [bic, setBic] = useState('');
-  const [validationErrors, setvalidationErrors] = useState({});
+  const requiredMessage = __('This is a required field.');
 
-  const validateBic = () => {
-    const err = {};
+  const validationSchema = YupObject({
+    bic: YupString().required(requiredMessage),
+  });
 
-    if (bic.trim().length === 0) {
-      err.bic = __('Bic is required');
-    }
-    setvalidationErrors(err);
-  };
+  const formik = useFormik({
+    initialValues: {
+      bic: '',
+    },
+    validationSchema,
+  });
 
   const placeOrderWithGiropay = useCallback(
     async (values) => {
-      validateBic();
-
-      if (Object.keys(validationErrors).length !== 0) {
+      const errors = await formik.validateForm();
+      formik.submitForm();
+      if (Object.keys(errors).length) {
         setErrorMessage(__('One or more fields are required'));
         scrollToElement(selected.code);
         return;
       }
 
       _set(values, ADDITIONAL_DATA_KEY, {
-        customer_bic: bic,
+        customer_bic: formik.values.bic,
       });
 
       await onSubmit(values);
     },
-    [onSubmit, setErrorMessage, validationErrors]
+    [onSubmit, setErrorMessage, formik.values.bic]
   );
-
-  useEffect(() => {
-    validateBic();
-  }, [bic]);
 
   useEffect(() => {
     registerPaymentAction(method.code, placeOrderWithGiropay);
@@ -81,17 +79,13 @@ function Giropay({ method, selected, actions }) {
   return (
     <div id={selected.code}>
       {invoiceRadioInput}
-      <Card>
-        <TextInput
-          className="w-full"
-          name="bic"
-          type="text"
-          label={__('BIC:')}
-          value={bic}
-          onChange={(e) => setBic(e.target.value)}
-          error={validationErrors.bic}
-        />
-      </Card>
+      <TextInput
+        className="w-full"
+        name="bic"
+        type="text"
+        label={__('BIC:')}
+        formik={formik}
+      />
       <PlaceOrder />
     </div>
   );
