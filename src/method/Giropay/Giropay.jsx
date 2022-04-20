@@ -53,10 +53,16 @@ function Giropay({ method, selected, actions }) {
     validationSchema,
   });
 
+  const {
+    validateForm,
+    submitForm,
+    values: { bic },
+  } = formik;
+
   const placeOrderWithGiropay = useCallback(
     async (values) => {
-      const errors = await formik.validateForm();
-      formik.submitForm();
+      const errors = await validateForm();
+      submitForm();
       if (Object.keys(errors).length) {
         setErrorMessage(__('One or more fields are required'));
         scrollToElement(selected.code);
@@ -64,12 +70,12 @@ function Giropay({ method, selected, actions }) {
       }
 
       _set(values, ADDITIONAL_DATA_KEY, {
-        customer_bic: formik.values.bic,
+        customer_bic: bic,
       });
 
       await onSubmit(values);
     },
-    [onSubmit, setErrorMessage, formik.values.bic]
+    [onSubmit, setErrorMessage, bic]
   );
 
   useEffect(() => {
