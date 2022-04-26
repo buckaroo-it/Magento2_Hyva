@@ -148,35 +148,29 @@ function Creditcards({ method, actions }) {
 
   return (
     <>
-      <div className="title flex">
+      <div className="title flex justify-between">
         <RadioInput
           value={method.code}
+          label={method.title}
           name="paymentMethod"
           onChange={onChange}
           checked={method.code === paymentValues.code}
         />
-        <div className="text">
-          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-          <label htmlFor={`paymentMethod_${method.code}`}>{method.title}</label>
-          <div className="description">{__('Pay with your card')}</div>
-        </div>
 
-        <img
-          height="24px"
-          width="24px"
-          src={creditcardsLogo}
-          alt="Creditcards Logo"
-        />
+        <img src={creditcardsLogo} className="w-12" alt="Creditcards Logo" />
       </div>
-      {method.code === paymentValues.code && (
-        <div className="content">
-          <div className="form-control">
+      <div className="content py-2 px-10">
+        {method.code === paymentValues.code && (
+          <>
             <div className="field my-2">
-              <label className="label" htmlFor="issuer">
-                {__('Issuer')}
-              </label>
+              <div>
+                <label className="label" htmlFor="issuer">
+                  {__('Issuer')}
+                </label>
+              </div>
               <select
                 className="form-input w-full"
+                type="text"
                 name="issuer"
                 id="issuer"
                 value={issuer}
@@ -242,11 +236,12 @@ function Creditcards({ method, actions }) {
               onBlur={validate}
               error={validateErrors.securitycode}
             />
+            <p>{__("You'll be redirected to finish the payment.")}</p>
 
             <PlaceOrder />
-          </div>
-        </div>
-      )}
+          </>
+        )}
+      </div>
     </>
   );
 }

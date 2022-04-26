@@ -69,45 +69,42 @@ function IDeal({ method, actions }) {
 
   return (
     <>
-      <div className="title flex">
+      <div className="title flex justify-between">
         <RadioInput
           value={method.code}
+          label={method.title}
           name="paymentMethod"
           onChange={onChange}
           checked={method.code === paymentValues.code}
         />
-        <div className="text">
-          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-          <label htmlFor={`paymentMethod_${method.code}`}>{method.title}</label>
-          <div className="cta">{__('Most often chosen')}</div>
-          <div className="description">{__('Pay with online banking')}</div>
-        </div>
 
-        <img height="24px" width="24px" src={idealLogo} alt="Ideal Logo" />
+        <img src={idealLogo} className="w-12" alt="Ideal Logo" />
       </div>
-      {method.code === paymentValues.code && (
-        <div className="content pt-4">
-          <select
-            onChange={(e) => {
-              onChange(e.target.value);
-            }}
-            className="form-select"
-            name="issuer"
-          >
-            <option disabled value="">
-              {__('Choose issuer')}
-            </option>
-            {paymentMethods.map((issuer) => (
-              <option value={issuer.code} key={issuer.code}>
-                {issuer.name}
+      <div className="content py-2 px-10">
+        {method.code === paymentValues.code && (
+          <>
+            <select
+              onChange={(e) => {
+                onChange(e.target.value);
+              }}
+              className="form-select"
+              name="issuer"
+            >
+              <option disabled value="">
+                {__('Choose issuer')}
               </option>
-            ))}
-          </select>
-          <small>{__("You'll be redirected to finish the payment.")}</small>
+              {paymentMethods.map((issuer) => (
+                <option value={issuer.code} key={issuer.code}>
+                  {issuer.name}
+                </option>
+              ))}
+            </select>
+            <p>{__("You'll be redirected to finish the payment.")}</p>
 
-          <PlaceOrder />
-        </div>
-      )}
+            <PlaceOrder />
+          </>
+        )}
+      </div>
     </>
   );
 }
