@@ -11,9 +11,9 @@ import useCheckoutFormAppContext from '@hyva/react-checkout/components/CheckoutF
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
 import { __ } from '@hyva/react-checkout/i18n';
 import { SetPaymentMethod } from '../../lib/PaymentMethod';
-import { getConfigIdeal } from '../../../config';
+import { getConfig } from '../../../config';
 import useOnSubmit from './hooks/useOnSubmit';
-import idealLogo from '../../../assets/ideal.svg';
+import logo from '../../../assets/Ideal.svg';
 
 const PAYMENT_METHOD_CODE = 'buckaroo_magento2_ideal';
 
@@ -29,7 +29,7 @@ function IDeal({ method, actions }) {
   const { paymentValues } = formikData;
   const { change } = actions;
 
-  const idealConfig = getConfigIdeal();
+  const idealConfig = getConfig('ideal');
   const paymentMethods = idealConfig.banks;
   const [selectedIssuer, setSelectedIssuer] = useState(null);
 
@@ -77,8 +77,14 @@ function IDeal({ method, actions }) {
           onChange={onChange}
           checked={method.code === paymentValues.code}
         />
+        <div className="text">
+          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+          <label htmlFor={`paymentMethod_${method.code}`}>{method.title}</label>
+          <div className="cta">{__('Most often chosen')}</div>
+          <div className="description">{__('Pay with online banking')}</div>
+        </div>
 
-        <img src={idealLogo} className="w-12" alt="Ideal Logo" />
+        <img height="24px" width="24px" src={logo} alt="Ideal Logo" />
       </div>
       <div className="content py-2 px-10">
         {method.code === paymentValues.code && (

@@ -11,9 +11,9 @@ import useCheckoutFormAppContext from '@hyva/react-checkout/components/CheckoutF
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
 import { __ } from '@hyva/react-checkout/i18n';
 import { SetPaymentMethod } from '../../lib/PaymentMethod';
-import { getConfigCreditcards } from '../../../config';
+import { getConfig } from '../../../config';
 import useOnSubmit from './hooks/useOnSubmit';
-import creditcardsLogo from '../../../assets/creditcards.svg';
+import logo from '../../../assets/Creditcards.svg';
 import BuckarooClientSideEncryption from '../../../assets/lib/ClientSideEncryption001';
 import TextInput from './TextInput';
 
@@ -31,7 +31,7 @@ function Creditcards({ method, actions }) {
   const { paymentValues } = formikData;
   const { change } = actions;
 
-  const creditCardsConfig = getConfigCreditcards(null);
+  const creditCardsConfig = getConfig('creditcards');
 
   function getIssuers() {
     return creditCardsConfig.creditcards
@@ -157,7 +157,7 @@ function Creditcards({ method, actions }) {
           checked={method.code === paymentValues.code}
         />
 
-        <img src={creditcardsLogo} className="w-12" alt="Creditcards Logo" />
+        <img height="24px" width="24px" src={logo} alt="Creditcards Logo" />
       </div>
       <div className="content py-2 px-10">
         {method.code === paymentValues.code && (

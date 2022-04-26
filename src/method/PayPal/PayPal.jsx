@@ -12,7 +12,7 @@ import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormCon
 import { __ } from '@hyva/react-checkout/i18n';
 import { SetPaymentMethod } from '../../lib/PaymentMethod';
 import useOnSubmit from './hooks/useOnSubmit';
-import paypalLogo from '../../../assets/paypal.svg';
+import logo from '../../../assets/Paypal.svg';
 
 const PAYMENT_METHOD_CODE = 'buckaroo_magento2_paypal';
 
@@ -71,7 +71,12 @@ function PayPal({ method, actions }) {
           checked={method.code === paymentValues.code}
         />
 
-        <img src={paypalLogo} className="w-12" alt="PayPal Logo" />
+        <div className="text">
+          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+          <label htmlFor={`paymentMethod_${method.code}`}>{method.title}</label>
+          <div className="description">{__('Pay quick and secure')}</div>
+        </div>
+        <img height="24px" width="24px" src={logo} alt="PayPal Logo" />
       </div>
       <div className="content py-2 px-10">
         {method.code === paymentValues.code && (

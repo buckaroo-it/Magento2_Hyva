@@ -3,8 +3,10 @@ import _get from 'lodash.get';
 import { __ } from '@hyva/react-checkout/i18n';
 
 export default function restSetGuestPaymentMethodModifier(result) {
+  if (result && result.message) {
+    throw new Error(result.message);
+  }
   const _result = JSON.parse(result);
-
   const message = _get(_result, 'message');
 
   if (message) {
