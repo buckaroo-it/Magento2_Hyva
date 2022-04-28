@@ -10,7 +10,7 @@ function PartialPaymentInfo() {
 
   const [display, setDisplay] = useState(false);
   useEffect(() => {
-    if (cart.partial_payment.transactions.length) {
+    if (cart.partial_payment && cart.partial_payment.transactions.length) {
       setCartInfo({
         ...cart,
         available_payment_methods: {
@@ -29,13 +29,6 @@ function PartialPaymentInfo() {
     } = cart.partial_payment;
     return (
       <>
-        <h4 className="font-bold border-b mb-2">{__('Payment summary:')}</h4>
-        <div className="mt-3">
-          <div className="flex justify-between font-bold border-b mb-2">
-            <div>{__('Order Total')}</div>
-            <div>{cart.prices.grandTotal || '0'}</div>
-          </div>
-        </div>
         {transactions.map((transaction) => {
           const { amount, name, transaction_id: transactionId } = transaction;
           return (
