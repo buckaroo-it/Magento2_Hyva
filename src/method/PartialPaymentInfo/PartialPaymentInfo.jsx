@@ -19,7 +19,7 @@ function PartialPaymentInfo() {
       });
       setDisplay(true);
     }
-  }, [cart.partial_payment.transactions]);
+  }, [cart.partial_payment]);
 
   if (display) {
     const {
