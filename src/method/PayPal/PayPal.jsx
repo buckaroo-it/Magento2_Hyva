@@ -1,93 +1,56 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { object } from 'prop-types';
-import _get from 'lodash.get';
+
 import RadioInput from '@hyva/react-checkout/components/common/Form/RadioInput';
-import usePaymentMethodFormContext from '@hyva/react-checkout/components/paymentMethod/hooks/usePaymentMethodFormContext';
-import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
-import useAppContext from '@hyva/react-checkout/hook/useAppContext';
-import useCartContext from '@hyva/react-checkout/hook/useCartContext';
-import useShippingAddressCartContext from '@hyva/react-checkout/components/shippingAddress/hooks/useShippingAddressCartContext';
-import useCheckoutFormAppContext from '@hyva/react-checkout/components/CheckoutForm/hooks/useCheckoutFormAppContext';
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
+import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
 import { __ } from '@hyva/react-checkout/i18n';
-import { SetPaymentMethod } from '../../lib/PaymentMethod';
-import useOnSubmit from './hooks/useOnSubmit';
+
 import logo from '../../../assets/Paypal.svg';
+import useOnSubmit from '../../lib/hooks/useOnSubmit';
 
-const PAYMENT_METHOD_CODE = 'buckaroo_magento2_paypal';
+function PayPal({ method, selected, actions }) {
+  const isSelected = method.code === selected.code;
 
-function PayPal({ method, actions }) {
+  const invoiceRadioInput = (
+    <div className="title flex justify-between">
+      <RadioInput
+        value={method.code}
+        name="paymentMethod"
+        checked={isSelected}
+        onChange={actions.change}
+      />
+      <div className="text">
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+        <label htmlFor={`paymentMethod_${method.code}`}>{method.title}</label>
+        <div className="description">{__('Pay quick and secure')}</div>
+      </div>
+      <img height="24px" width="24px" src={logo} alt="PayPal Logo" />
+    </div>
+  );
+
+  if (!isSelected) {
+    return invoiceRadioInput;
+  }
+
   const { registerPaymentAction } = useCheckoutFormContext();
-
-  const { formikData } = usePaymentMethodFormContext();
-  const { appDispatch } = useAppContext();
-  const { cart } = useCartContext();
-  const { cartShippingAddress: address } = useShippingAddressCartContext();
-  const { setPageLoader } = useCheckoutFormAppContext();
-
-  const { paymentValues } = formikData;
-  const { change } = actions;
-
-  const [selectedIssuer, setSelectedIssuer] = useState(null);
+  const onSubmit = useOnSubmit();
 
   useEffect(() => {
-    const { paymentSubmitHandler } = useOnSubmit();
-
-    registerPaymentAction(PAYMENT_METHOD_CODE, async (e) => {
-      setPageLoader(true);
-      await paymentSubmitHandler(e, appDispatch, selectedIssuer);
-      setPageLoader(false);
-    });
-  }, [registerPaymentAction, selectedIssuer]);
-
-  const onChange = async (e) => {
-    let issuer = null;
-    if (typeof e === 'string') {
-      issuer = e;
-      setSelectedIssuer(e);
-    } else {
-      change(e);
-    }
-
-    const customerEmail = _get(cart, 'email', '');
-
-    SetPaymentMethod(
-      appDispatch,
-      method.code,
-      issuer || selectedIssuer,
-      address,
-      customerEmail
-    );
-  };
+    registerPaymentAction(method.code, onSubmit);
+  }, [method, registerPaymentAction, onSubmit]);
 
   return (
-    <>
-      <div className="title flex justify-between">
-        <RadioInput
-          value={method.code}
-          label={method.title}
-          name="paymentMethod"
-          onChange={onChange}
-          checked={method.code === paymentValues.code}
-        />
+    <div id={selected.code}>
+      {invoiceRadioInput}
+      <div className="content">
+        <p className="text-body-xs mt-4">
+          {__("You'll be redirected to finish the payment.")}
+        </p>
 
-        <div className="text">
-          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-          <label htmlFor={`paymentMethod_${method.code}`}>{method.title}</label>
-          <div className="description">{__('Pay quick and secure')}</div>
-        </div>
-        <img height="24px" width="24px" src={logo} alt="PayPal Logo" />
+        <PlaceOrder />
       </div>
-      <div className="content py-2 px-10">
-        {method.code === paymentValues.code && (
-          <>
-            <p>{__("You'll be redirected to finish the payment.")}</p>
-
-            <PlaceOrder />
-          </>
-        )}
-      </div>
-    </>
+    </div>
   );
 }
 
@@ -95,5 +58,6 @@ export default PayPal;
 
 PayPal.propTypes = {
   method: object.isRequired,
+  selected: object.isRequired,
   actions: object.isRequired,
 };
