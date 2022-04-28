@@ -10,14 +10,12 @@ import { formatPrice } from '@hyva/react-checkout/utils/price';
 
 import restAddPartialPaymentTransaction from '../../lib/api/restAddPartialPaymentTransaction/restAddPartialPaymentTransaction';
 import useUpdatePartialPaymentList from '../../lib/helpers/PartialPayments/UpdatePartialPaymentList';
-import usePlaceBuckarooOrder from '../../lib/helpers/PartialPayments/PlaceOrder';
 import TextInput from '../../lib/helpers/components/TextInput';
 
 function GiftcardForm({ giftcardCode }) {
   const { appDispatch } = useAppContext();
   const { setPageLoader, setSuccessMessage } = usePaymentMethodAppContext();
   const cartContext = useCartContext();
-  const placeOrder = usePlaceBuckarooOrder();
   const requiredMessage = __('This is a required field.');
 
   const validationSchema = YupObject({
@@ -42,9 +40,7 @@ function GiftcardForm({ giftcardCode }) {
       useUpdatePartialPaymentList(cartContext, response);
       resetForm();
 
-      if (response.remainder_amount === 0) {
-        await placeOrder();
-      } else {
+      if (response.remainder_amount !== 0) {
         setSuccessMessage(
           __(
             `A partial payment of ${formatPrice(

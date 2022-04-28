@@ -18,10 +18,12 @@ import logo from '../../../assets/Giftcards.svg';
 import { getConfig } from '../../../config';
 import GiftcardItem from './GiftcardItem';
 import usePartialPayment from '../../lib/helpers/PartialPayments/PartialPayment';
+import onlyBuckaroo from '../../lib/helpers/PartialPayments/OnlyBuckarooPayments';
+import usePlaceBuckarooOrder from '../../lib/helpers/PartialPayments/PlaceOrder';
 
 function Giftcards({ method, selected, actions }) {
   const isSelected = method.code === selected.code;
-  const { cart } = useCartContext();
+  const { cart, setCartInfo } = useCartContext();
   const showAsList = getConfig('groupGiftcards') === '0';
 
   if (showAsList) {
@@ -54,6 +56,8 @@ function Giftcards({ method, selected, actions }) {
 
   const defaultGiftcardCode = '';
   const [giftcardCode, setGiftcardCode] = useState(defaultGiftcardCode);
+  const placeOrder = usePlaceBuckarooOrder();
+  const [canPlaceOrder, setCanPlaceOrder] = useState(false);
 
   const {
     fields,
@@ -63,11 +67,7 @@ function Giftcards({ method, selected, actions }) {
 
   const placeOrderWithGiftcards = useCallback(
     async (values) => {
-      if (
-        showAsList &&
-        cart.partial_payment.transactions.length &&
-        cart.partial_payment.remainder_amount !== 0
-      ) {
+      if (showAsList && canPlaceOrder) {
         setErrorMessage(__('Cannot pay with giftcards'));
         return;
       }
@@ -76,8 +76,20 @@ function Giftcards({ method, selected, actions }) {
       });
       await onSubmit(values);
     },
-    [onSubmit, setErrorMessage, cart.partial_payment]
+    [onSubmit, setErrorMessage, canPlaceOrder]
   );
+
+  useEffect(() => {
+    setCanPlaceOrder(
+      cart.partial_payment && cart.partial_payment.remainder_amount === 0
+    );
+  }, [cart]);
+
+  useEffect(() => {
+    if (canPlaceOrder) {
+      placeOrder();
+    }
+  }, [canPlaceOrder]);
 
   const giftcardCodeChange = async (selectedGiftcardCode) => {
     const methodSelected = _get(methodList, `${method.code}.code`);
@@ -90,6 +102,17 @@ function Giftcards({ method, selected, actions }) {
     setFieldTouched(fields.code, true);
     setGiftcardCode(selectedGiftcardCode);
   };
+
+  useEffect(() => {
+    if (cart.partial_payment && cart.partial_payment.transactions.length) {
+      setCartInfo({
+        ...cart,
+        available_payment_methods: {
+          ...onlyBuckaroo(cart.available_payment_methods),
+        },
+      });
+    }
+  }, [cart.partial_payment]);
 
   useEffect(() => {
     registerPaymentAction(method.code, placeOrderWithGiftcards);

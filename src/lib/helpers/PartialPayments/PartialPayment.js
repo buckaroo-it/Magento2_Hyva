@@ -1,5 +1,4 @@
 import useCartContext from '@hyva/react-checkout/hook/useCartContext';
-import { __ } from '@hyva/react-checkout/i18n';
 import { useEffect } from 'react';
 import restGetPartialPaymentTransactions from '../../api/restGetPartialPaymentTransactions';
 
@@ -12,17 +11,10 @@ function usePartialPayment() {
         appDispatch
       );
 
-      const availablePaymentMethods = {
-        buckaroo_magento2_partial_payment_info: {
-          code: 'buckaroo_magento2_partial_payment_info',
-          title: __('Payment status'),
-        },
-        ...cart.available_payment_methods,
-      };
       setCartInfo({
         ...cart,
         available_payment_methods: {
-          ...availablePaymentMethods,
+          ...cart.available_payment_methods,
         },
         partial_payment: partialPayment,
       });

@@ -3,20 +3,12 @@ import useCartContext from '@hyva/react-checkout/hook/useCartContext';
 import { __ } from '@hyva/react-checkout/i18n';
 import { formatPrice } from '@hyva/react-checkout/utils/price';
 
-import onlyBuckaroo from '../../lib/helpers/PartialPayments/OnlyBuckarooPayments';
-
 function PartialPaymentInfo() {
-  const { cart, setCartInfo } = useCartContext();
+  const { cart } = useCartContext();
 
   const [display, setDisplay] = useState(false);
   useEffect(() => {
     if (cart.partial_payment && cart.partial_payment.transactions.length) {
-      setCartInfo({
-        ...cart,
-        available_payment_methods: {
-          ...onlyBuckaroo(cart.available_payment_methods),
-        },
-      });
       setDisplay(true);
     }
   }, [cart.partial_payment]);
