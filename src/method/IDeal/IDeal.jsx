@@ -11,9 +11,9 @@ import useCheckoutFormAppContext from '@hyva/react-checkout/components/CheckoutF
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
 import { __ } from '@hyva/react-checkout/i18n';
 import { SetPaymentMethod } from '../../lib/PaymentMethod';
-import { getConfigIdeal } from '../../../config';
+import { getConfig } from '../../../config';
 import useOnSubmit from './hooks/useOnSubmit';
-import idealLogo from '../../../assets/ideal.svg';
+import logo from '../../../assets/Ideal.svg';
 
 const PAYMENT_METHOD_CODE = 'buckaroo_magento2_ideal';
 
@@ -29,7 +29,7 @@ function IDeal({ method, actions }) {
   const { paymentValues } = formikData;
   const { change } = actions;
 
-  const idealConfig = getConfigIdeal();
+  const idealConfig = getConfig('ideal');
   const paymentMethods = idealConfig.banks;
   const [selectedIssuer, setSelectedIssuer] = useState(null);
 
@@ -69,9 +69,10 @@ function IDeal({ method, actions }) {
 
   return (
     <>
-      <div className="title flex">
+      <div className="title flex justify-between">
         <RadioInput
           value={method.code}
+          label={method.title}
           name="paymentMethod"
           onChange={onChange}
           checked={method.code === paymentValues.code}
@@ -83,31 +84,33 @@ function IDeal({ method, actions }) {
           <div className="description">{__('Pay with online banking')}</div>
         </div>
 
-        <img height="24px" width="24px" src={idealLogo} alt="Ideal Logo" />
+        <img height="24px" width="24px" src={logo} alt="Ideal Logo" />
       </div>
-      {method.code === paymentValues.code && (
-        <div className="content pt-4">
-          <select
-            onChange={(e) => {
-              onChange(e.target.value);
-            }}
-            className="form-select"
-            name="issuer"
-          >
-            <option disabled value="">
-              {__('Choose issuer')}
-            </option>
-            {paymentMethods.map((issuer) => (
-              <option value={issuer.code} key={issuer.code}>
-                {issuer.name}
+      <div className="content py-2 px-10">
+        {method.code === paymentValues.code && (
+          <>
+            <select
+              onChange={(e) => {
+                onChange(e.target.value);
+              }}
+              className="form-select"
+              name="issuer"
+            >
+              <option disabled value="">
+                {__('Choose issuer')}
               </option>
-            ))}
-          </select>
-          <small>{__("You'll be redirected to finish the payment.")}</small>
+              {paymentMethods.map((issuer) => (
+                <option value={issuer.code} key={issuer.code}>
+                  {issuer.name}
+                </option>
+              ))}
+            </select>
+            <p>{__("You'll be redirected to finish the payment.")}</p>
 
-          <PlaceOrder />
-        </div>
-      )}
+            <PlaceOrder />
+          </>
+        )}
+      </div>
     </>
   );
 }

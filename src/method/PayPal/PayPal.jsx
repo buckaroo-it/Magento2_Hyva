@@ -12,7 +12,7 @@ import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormCon
 import { __ } from '@hyva/react-checkout/i18n';
 import { SetPaymentMethod } from '../../lib/PaymentMethod';
 import useOnSubmit from './hooks/useOnSubmit';
-import paypalLogo from '../../../assets/paypal.svg';
+import logo from '../../../assets/Paypal.svg';
 
 const PAYMENT_METHOD_CODE = 'buckaroo_magento2_paypal';
 
@@ -65,6 +65,7 @@ function PayPal({ method, actions }) {
       <div className="title flex justify-between">
         <RadioInput
           value={method.code}
+          label={method.title}
           name="paymentMethod"
           onChange={onChange}
           checked={method.code === paymentValues.code}
@@ -75,17 +76,17 @@ function PayPal({ method, actions }) {
           <label htmlFor={`paymentMethod_${method.code}`}>{method.title}</label>
           <div className="description">{__('Pay quick and secure')}</div>
         </div>
-        <img height="24px" width="24px" src={paypalLogo} alt="PayPal Logo" />
+        <img height="24px" width="24px" src={logo} alt="PayPal Logo" />
       </div>
-      {method.code === paymentValues.code && (
-        <div className="content">
-          <p className="text-body-xs mt-4">
-            {__("You'll be redirected to finish the payment.")}
-          </p>
+      <div className="content py-2 px-10">
+        {method.code === paymentValues.code && (
+          <>
+            <p>{__("You'll be redirected to finish the payment.")}</p>
 
-          <PlaceOrder />
-        </div>
-      )}
+            <PlaceOrder />
+          </>
+        )}
+      </div>
     </>
   );
 }
