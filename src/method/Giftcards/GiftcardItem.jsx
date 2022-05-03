@@ -24,13 +24,13 @@ function GiftcardItem({ giftcard, selected, giftcardCodeChange }) {
     </div>
   );
   if (!selected) {
-    return giftcardRadio;
+    return <div className="payment-method giftcard">{giftcardRadio}</div>;
   }
   return (
-    <>
+    <div className="payment-method giftcard">
       {giftcardRadio}
       {selected && <GiftcardForm giftcardCode={giftcard.code} />}
-    </>
+    </div>
   );
 }
 
