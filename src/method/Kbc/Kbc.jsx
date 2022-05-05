@@ -25,7 +25,7 @@ function Kbc({ method, selected, actions }) {
         {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label htmlFor={`paymentMethod_${method.code}`}>{method.title}</label>
       </div>
-      <img height="24px" width="24px" src={logo} alt="PayPal Logo" />
+      <img height="24px" width="24px" src={logo} alt={method.title} />
     </div>
   );
 
