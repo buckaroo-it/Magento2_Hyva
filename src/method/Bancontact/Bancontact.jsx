@@ -23,14 +23,17 @@ function Bancontact({ method, selected, actions }) {
   const isSelected = method.code === selected.code;
 
   const invoiceRadioInput = (
-    <div className="title flex justify-between">
+    <div className="title flex">
       <RadioInput
         value={method.code}
-        label={method.title}
         name="paymentMethod"
         checked={isSelected}
         onChange={actions.change}
       />
+      <div className="text">
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+        <label htmlFor={`paymentMethod_${method.code}`}>{method.title}</label>
+      </div>
       <img src={logo} className="w-12" alt={method.title} />
     </div>
   );
