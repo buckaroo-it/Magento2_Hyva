@@ -69,10 +69,9 @@ function IDeal({ method, actions }) {
 
   return (
     <>
-      <div className="title flex justify-between">
+      <div className="title flex">
         <RadioInput
           value={method.code}
-          label={method.title}
           name="paymentMethod"
           onChange={onChange}
           checked={method.code === paymentValues.code}

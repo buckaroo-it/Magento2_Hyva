@@ -148,14 +148,18 @@ function Creditcards({ method, actions }) {
 
   return (
     <>
-      <div className="title flex justify-between">
+      <div className="title flex">
         <RadioInput
           value={method.code}
-          label={method.title}
           name="paymentMethod"
           onChange={onChange}
           checked={method.code === paymentValues.code}
         />
+        <div className="text">
+          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+          <label htmlFor={`paymentMethod_${method.code}`}>{method.title}</label>
+          <div className="description">{__('Credit or Debit')}</div>
+        </div>
 
         <img height="24px" width="24px" src={logo} alt="Creditcards Logo" />
       </div>

@@ -31,7 +31,7 @@ function Giftcards({ method, selected, actions }) {
   }
   const invoiceRadioInput = (
     <>
-      <div className="title flex justify-between">
+      <div className="title flex">
         <RadioInput
           value={method.code}
           label={method.title}
