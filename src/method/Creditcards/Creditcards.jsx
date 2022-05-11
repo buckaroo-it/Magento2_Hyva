@@ -25,7 +25,7 @@ function Creditcards({ method, selected, actions }) {
   const isSelected = method.code === selected.code;
 
   const invoiceRadioInput = (
-    <div className="title flex justify-between">
+    <div className="title flex">
       <RadioInput
         value={method.code}
         name="paymentMethod"
@@ -124,7 +124,7 @@ function Creditcards({ method, selected, actions }) {
   return (
     <div id={selected.code}>
       {invoiceRadioInput}
-      <div className="content">
+      <div className="content py-2 px-10">
         <div className="form-control">
           <SelectInput
             className="w-full"
@@ -174,6 +174,7 @@ function Creditcards({ method, selected, actions }) {
             formik={formik}
           />
           <p>{__("You'll be redirected to finish the payment.")}</p>
+
           <PlaceOrder />
         </div>
       </div>

@@ -10,14 +10,19 @@ function GiftcardItem({ giftcard, selected, giftcardCodeChange }) {
   };
 
   const giftcardRadio = (
-    <div className="title flex justify-between">
+    <div className="title flex">
       <RadioInput
         value={giftcard.code}
-        label={giftcard.title}
         name="paymentMethod"
         checked={selected}
         onChange={setSelected}
       />
+      <div className="text">
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+        <label htmlFor={`paymentMethod_${giftcard.code}`}>
+          {giftcard.title}
+        </label>
+      </div>
       {giftcard.logo !== false && (
         <img src={giftcard.logo} className="w-12" alt={giftcard.title} />
       )}

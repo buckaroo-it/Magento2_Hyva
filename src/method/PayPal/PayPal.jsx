@@ -13,7 +13,7 @@ function PayPal({ method, selected, actions }) {
   const isSelected = method.code === selected.code;
 
   const invoiceRadioInput = (
-    <div className="title flex justify-between">
+    <div className="title flex">
       <RadioInput
         value={method.code}
         name="paymentMethod"
@@ -43,10 +43,8 @@ function PayPal({ method, selected, actions }) {
   return (
     <div id={selected.code}>
       {invoiceRadioInput}
-      <div className="content">
-        <p className="text-body-xs mt-4">
-          {__("You'll be redirected to finish the payment.")}
-        </p>
+      <div className="content py-2 px-10">
+        <p>{__("You'll be redirected to finish the payment.")}</p>
 
         <PlaceOrder />
       </div>

@@ -13,15 +13,19 @@ function Kbc({ method, selected, actions }) {
   const isSelected = method.code === selected.code;
 
   const invoiceRadioInput = (
-    <div className="title flex justify-between">
+    <div className="title flex">
       <RadioInput
         value={method.code}
-        label={method.title}
         name="paymentMethod"
         checked={isSelected}
         onChange={actions.change}
       />
-      <img src={logo} className="w-12" alt={method.title} />
+
+      <div className="text">
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+        <label htmlFor={`paymentMethod_${method.code}`}>{method.title}</label>
+      </div>
+      <img height="24px" width="24px" src={logo} alt={method.title} />
     </div>
   );
 
