@@ -83,7 +83,7 @@ function IDeal({ method, actions }) {
           <div className="description">{__('Pay with online banking')}</div>
         </div>
 
-        <img height="24px" width="24px" src={logo} alt="Ideal Logo" />
+        <img height="24" width="24" src={logo} alt="Ideal Logo" />
       </div>
       <div className="content py-2 px-10">
         {method.code === paymentValues.code && (

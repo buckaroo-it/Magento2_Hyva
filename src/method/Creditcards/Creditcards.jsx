@@ -161,7 +161,7 @@ function Creditcards({ method, actions }) {
           <div className="description">{__('Credit or Debit')}</div>
         </div>
 
-        <img height="24px" width="24px" src={logo} alt="Creditcards Logo" />
+        <img height="24" width="24" src={logo} alt="Creditcards Logo" />
       </div>
       <div className="content py-2 px-10">
         {method.code === paymentValues.code && (
