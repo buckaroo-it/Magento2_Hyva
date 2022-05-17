@@ -1,114 +1,112 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { object } from 'prop-types';
-import _get from 'lodash.get';
+import _set from 'lodash.set';
+
+import { useFormik } from 'formik';
+
 import RadioInput from '@hyva/react-checkout/components/common/Form/RadioInput';
-import usePaymentMethodFormContext from '@hyva/react-checkout/components/paymentMethod/hooks/usePaymentMethodFormContext';
 import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
 import useAppContext from '@hyva/react-checkout/hook/useAppContext';
-import useCartContext from '@hyva/react-checkout/hook/useCartContext';
-import useShippingAddressCartContext from '@hyva/react-checkout/components/shippingAddress/hooks/useShippingAddressCartContext';
-import useCheckoutFormAppContext from '@hyva/react-checkout/components/CheckoutForm/hooks/useCheckoutFormAppContext';
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
+import { scrollToElement } from '@hyva/react-checkout/utils/form';
+
 import { __ } from '@hyva/react-checkout/i18n';
-import { SetPaymentMethod } from '../../lib/PaymentMethod';
 import { getConfig } from '../../../config';
-import useOnSubmit from './hooks/useOnSubmit';
 import logo from '../../../assets/Ideal.svg';
+import { ADDITIONAL_DATA_KEY } from '../../lib/helpers/AdditionalBuckarooDataKey';
+import { validationSchema } from './Validators';
+import SelectInput from '../../lib/helpers/components/SelectInput';
+import useOnSubmit from '../../lib/hooks/useOnSubmit';
 
-const PAYMENT_METHOD_CODE = 'buckaroo_magento2_ideal';
+function IDeal({ method, selected, actions }) {
+  const isSelected = method.code === selected.code;
 
-function IDeal({ method, actions }) {
+  const invoiceRadioInput = (
+    <div className="title flex">
+      <RadioInput
+        value={method.code}
+        name="paymentMethod"
+        checked={isSelected}
+        onChange={actions.change}
+      />
+      <div className="text">
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+        <label htmlFor={`paymentMethod_${method.code}`}>{method.title}</label>
+        <div className="cta">{__('Most often chosen')}</div>
+        <div className="description">{__('Pay with online banking')}</div>
+      </div>
+
+      <img height="24px" width="24px" src={logo} alt="Ideal Logo" />
+    </div>
+  );
+
+  if (!isSelected) {
+    return invoiceRadioInput;
+  }
+
   const { registerPaymentAction } = useCheckoutFormContext();
+  const { setErrorMessage } = useAppContext();
+  const onSubmit = useOnSubmit();
 
-  const { formikData } = usePaymentMethodFormContext();
-  const { appDispatch } = useAppContext();
-  const { cart } = useCartContext();
-  const { cartShippingAddress: address } = useShippingAddressCartContext();
-  const { setPageLoader } = useCheckoutFormAppContext();
+  const { banks: paymentMethods } = getConfig('ideal');
 
-  const { paymentValues } = formikData;
-  const { change } = actions;
+  const formik = useFormik({
+    initialValues: {
+      issuer: '',
+    },
+    validationSchema,
+  });
 
-  const idealConfig = getConfig('ideal');
-  const paymentMethods = idealConfig.banks;
-  const [selectedIssuer, setSelectedIssuer] = useState(null);
+  const {
+    validateForm,
+    submitForm,
+    values: { issuer },
+  } = formik;
+
+  const palaceOrderWithIdeal = useCallback(
+    async (values) => {
+      const errors = await validateForm();
+      submitForm();
+      if (Object.keys(errors).length) {
+        setErrorMessage(__('One or more fields are required'));
+        scrollToElement(selected.code);
+        return;
+      }
+      _set(values, ADDITIONAL_DATA_KEY, {
+        issuer,
+      });
+      await onSubmit(values);
+    },
+    [onSubmit, setErrorMessage, issuer]
+  );
 
   useEffect(() => {
-    const { paymentSubmitHandler } = useOnSubmit();
+    registerPaymentAction(method.code, palaceOrderWithIdeal);
+  }, [method, registerPaymentAction, palaceOrderWithIdeal]);
 
-    registerPaymentAction(PAYMENT_METHOD_CODE, async (e) => {
-      setPageLoader(true);
-      await paymentSubmitHandler(e, appDispatch, selectedIssuer);
-      setPageLoader(false);
-    });
-  }, [registerPaymentAction, selectedIssuer]);
-
-  const onChange = async (e) => {
-    let issuer = null;
-    if (typeof e === 'string') {
-      issuer = e;
-      setSelectedIssuer(e);
-    } else {
-      change(e);
-    }
-
-    const customerEmail = _get(cart, 'email', '');
-
-    const paymentIssuer = issuer || selectedIssuer;
-
-    SetPaymentMethod(
-      appDispatch,
-      method.code,
-      paymentIssuer
-        ? { issuer: paymentIssuer }
-        : { buckaroo_skip_validation: 'true' },
-      address,
-      customerEmail
-    );
-  };
-
+  const mapIssuer = (origIssuer) => ({
+    name: origIssuer.name,
+    value: origIssuer.code,
+  });
+  const formatedIssuers = paymentMethods.map(mapIssuer);
   return (
     <>
-      <div className="title flex">
-        <RadioInput
-          value={method.code}
-          name="paymentMethod"
-          onChange={onChange}
-          checked={method.code === paymentValues.code}
-        />
-        <div className="text">
-          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-          <label htmlFor={`paymentMethod_${method.code}`}>{method.title}</label>
-          <div className="cta">{__('Most often chosen')}</div>
-          <div className="description">{__('Pay with online banking')}</div>
-        </div>
-
-        <img height="24px" width="24px" src={logo} alt="Ideal Logo" />
-      </div>
+      {invoiceRadioInput}
       <div className="content py-2 px-10">
-        {method.code === paymentValues.code && (
-          <>
-            <select
-              onChange={(e) => {
-                onChange(e.target.value);
-              }}
-              className="form-select"
-              name="issuer"
-            >
-              <option disabled value="">
-                {__('Choose issuer')}
-              </option>
-              {paymentMethods.map((issuer) => (
-                <option value={issuer.code} key={issuer.code}>
-                  {issuer.name}
-                </option>
-              ))}
-            </select>
-            <p>{__("You'll be redirected to finish the payment.")}</p>
+        <SelectInput
+          name="issuer"
+          label={__('Bank')}
+          formik={formik}
+          prependOption={
+            <option disabled value="">
+              {__('Select a bank')}
+            </option>
+          }
+          options={formatedIssuers}
+        />
+        <p>{__("You'll be redirected to finish the payment.")}</p>
 
-            <PlaceOrder />
-          </>
-        )}
+        <PlaceOrder />
       </div>
     </>
   );
@@ -118,5 +116,6 @@ export default IDeal;
 
 IDeal.propTypes = {
   method: object.isRequired,
+  selected: object.isRequired,
   actions: object.isRequired,
 };

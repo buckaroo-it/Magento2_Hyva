@@ -1,252 +1,184 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { object } from 'prop-types';
-import _get from 'lodash.get';
+import _set from 'lodash.set';
+
+import { useFormik } from 'formik';
+
 import RadioInput from '@hyva/react-checkout/components/common/Form/RadioInput';
-import usePaymentMethodFormContext from '@hyva/react-checkout/components/paymentMethod/hooks/usePaymentMethodFormContext';
-import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
-import useAppContext from '@hyva/react-checkout/hook/useAppContext';
-import useCartContext from '@hyva/react-checkout/hook/useCartContext';
-import useShippingAddressCartContext from '@hyva/react-checkout/components/shippingAddress/hooks/useShippingAddressCartContext';
-import useCheckoutFormAppContext from '@hyva/react-checkout/components/CheckoutForm/hooks/useCheckoutFormAppContext';
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
+import useAppContext from '@hyva/react-checkout/hook/useAppContext';
+import { scrollToElement } from '@hyva/react-checkout/utils/form';
+import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
 import { __ } from '@hyva/react-checkout/i18n';
-import { SetPaymentMethod } from '../../lib/PaymentMethod';
-import { getConfig } from '../../../config';
-import useOnSubmit from './hooks/useOnSubmit';
+
+import useOnSubmit from '../../lib/hooks/useOnSubmit';
 import logo from '../../../assets/Creditcards.svg';
-import BuckarooClientSideEncryption from '../../../assets/lib/ClientSideEncryption001';
-import TextInput from './TextInput';
+import { getConfig } from '../../../config';
+import encryptCardData from '../../lib/helpers/EncryptCardData';
+import { ADDITIONAL_DATA_KEY } from '../../lib/helpers/AdditionalBuckarooDataKey';
+import { validationSchema } from './Validators';
+import TextInput from '../../lib/helpers/components/TextInput';
+import SelectInput from '../../lib/helpers/components/SelectInput';
+import determineIssuer from './helpers/DetermineIssuer';
 
-const PAYMENT_METHOD_CODE = 'buckaroo_magento2_creditcards';
+function Creditcards({ method, selected, actions }) {
+  const isSelected = method.code === selected.code;
 
-function Creditcards({ method, actions }) {
+  const invoiceRadioInput = (
+    <div className="title flex">
+      <RadioInput
+        value={method.code}
+        name="paymentMethod"
+        checked={isSelected}
+        onChange={actions.change}
+      />
+      <div className="text">
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+        <label htmlFor={`paymentMethod_${method.code}`}>{method.title}</label>
+        <div className="description">{__('Pay with your card')}</div>
+      </div>
+
+      <img height="24px" width="24px" src={logo} alt="Creditcards Logo" />
+    </div>
+  );
+
+  if (!isSelected) {
+    return invoiceRadioInput;
+  }
+
   const { registerPaymentAction } = useCheckoutFormContext();
-
-  const { formikData } = usePaymentMethodFormContext();
-  const { appDispatch } = useAppContext();
-  const { cart } = useCartContext();
-  const { cartShippingAddress: address } = useShippingAddressCartContext();
-  const { setPageLoader } = useCheckoutFormAppContext();
-
-  const { paymentValues } = formikData;
-  const { change } = actions;
+  const { setErrorMessage } = useAppContext();
+  const onSubmit = useOnSubmit();
 
   const creditCardsConfig = getConfig('creditcards');
 
-  function getIssuers() {
-    return creditCardsConfig.creditcards
-      .filter((i) => i.active)
-      .sort((a, b) => a.sort - b.sort);
-  }
-
-  // Formdata:
-  const [issuer, setIssuer] = useState(null);
-  const [cardholder, setCardholder] = useState('');
-  const [cardnumber, setCardnumber] = useState('');
-  const [cardmonth, setCardmonth] = useState('');
-  const [cardyear, setCardyear] = useState('');
-  const [securitycode, setSecuritycode] = useState('');
-  const [validateErrors, setValidateErrors] = useState({});
-
-  useEffect(() => {
-    const cards = getIssuers();
+  const getFirstCard = () => {
+    const cards = creditCardsConfig.creditcards;
     if (!cards || !cards.length) {
-      return;
+      return '';
     }
-    setIssuer(cards[0].code);
-  }, [creditCardsConfig]);
+    return cards[0].code;
+  };
+
+  const yearStart = new Date().getFullYear();
+
+  const range = (size, startAt = 0) =>
+    [...Array(size).keys()].map((i) => i + startAt);
+
+  const formik = useFormik({
+    initialValues: {
+      cardholder: '',
+      cardnumber: '',
+      expirationmonth: '',
+      expirationyear: '',
+      cvc: '',
+      issuer: getFirstCard(),
+    },
+    validationSchema,
+  });
+
+  const {
+    validateForm,
+    submitForm,
+    values: formikValues,
+    touched,
+    setFieldValue,
+  } = formik;
 
   useEffect(() => {
-    const { paymentSubmitHandler } = useOnSubmit();
+    const issuer = determineIssuer(formikValues.cardnumber);
+    if (issuer) {
+      setFieldValue('issuer', issuer);
+    }
+  }, [formikValues.cardnumber, touched.cardnumber, setFieldValue]);
 
-    registerPaymentAction(PAYMENT_METHOD_CODE, (e) => {
-      setPageLoader(true);
-      paymentSubmitHandler(e, appDispatch, {
-        issuer,
-        cardholder,
-        cardnumber,
-        cardmonth,
-        cardyear,
-        securitycode,
+  const placeOrderWithCreditcards = useCallback(
+    async (values) => {
+      const errors = await validateForm();
+      submitForm();
+      if (Object.keys(errors).length) {
+        setErrorMessage(__('One or more fields are required'));
+        scrollToElement(selected.code);
+        return;
+      }
+      const encryptedCardData = await encryptCardData(formikValues);
+      _set(values, ADDITIONAL_DATA_KEY, {
+        customer_encrypteddata: encryptedCardData,
+        customer_creditcardcompany: formikValues.issuer,
       });
-      setPageLoader(false);
-    });
-  }, [
-    registerPaymentAction,
-    issuer,
-    cardholder,
-    cardnumber,
-    cardmonth,
-    cardyear,
-    securitycode,
-  ]);
+      await onSubmit(values);
+    },
+    [onSubmit, setErrorMessage, formikValues]
+  );
 
-  const onChange = async (e) => {
-    let selectedIssuer = null;
-    if (typeof e === 'string') {
-      selectedIssuer = e;
-    } else {
-      change(e);
-    }
+  useEffect(() => {
+    registerPaymentAction(method.code, placeOrderWithCreditcards);
+  }, [method, registerPaymentAction, placeOrderWithCreditcards]);
 
-    const customerEmail = _get(cart, 'email', '');
-
-    SetPaymentMethod(
-      appDispatch,
-      method.code,
-      selectedIssuer,
-      address,
-      customerEmail
-    );
-  };
-
-  const validate = async (e, submit = false, forceIssuer) => {
-    const err = {};
-
-    if (!BuckarooClientSideEncryption.V001.validateCardholderName(cardholder)) {
-      if (submit || cardholder !== '') {
-        err.cardholder = __('Please enter a valid cardholder name');
-      }
-    }
-
-    if (
-      !BuckarooClientSideEncryption.V001.validateCardNumber(
-        cardnumber,
-        forceIssuer || issuer
-      )
-    ) {
-      if (submit || cardnumber !== '') {
-        err.cardnumber = __('Please enter a valid card number');
-      }
-    }
-
-    if (!BuckarooClientSideEncryption.V001.validateMonth(cardmonth)) {
-      if (submit || cardmonth !== '') {
-        err.cardmonth = __('Please enter a valid month');
-      }
-    }
-
-    if (!BuckarooClientSideEncryption.V001.validateYear(cardyear)) {
-      if (submit || cardyear !== '') {
-        err.cardyear = __('Please enter a valid year');
-      }
-    }
-
-    if (
-      !BuckarooClientSideEncryption.V001.validateCvc(
-        securitycode,
-        forceIssuer || issuer
-      )
-    ) {
-      if (submit || securitycode !== '') {
-        err.securitycode = __('Please enter a valid security code');
-      }
-    }
-
-    setValidateErrors(err);
-  };
+  const mapIssuer = (issuer) => ({
+    name: issuer.name,
+    value: issuer.code,
+  });
+  const formatedIssuers = creditCardsConfig.creditcards.map(mapIssuer);
 
   return (
-    <>
-      <div className="title flex">
-        <RadioInput
-          value={method.code}
-          name="paymentMethod"
-          onChange={onChange}
-          checked={method.code === paymentValues.code}
-        />
-        <div className="text">
-          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-          <label htmlFor={`paymentMethod_${method.code}`}>{method.title}</label>
-          <div className="description">{__('Credit or Debit')}</div>
-        </div>
-
-        <img height="24px" width="24px" src={logo} alt="Creditcards Logo" />
-      </div>
+    <div id={selected.code}>
+      {invoiceRadioInput}
       <div className="content py-2 px-10">
-        {method.code === paymentValues.code && (
-          <>
-            <div className="field my-2">
-              <div>
-                <label className="label" htmlFor="issuer">
-                  {__('Issuer')}
-                </label>
-              </div>
-              <select
-                className="form-input w-full"
-                type="text"
-                name="issuer"
-                id="issuer"
-                value={issuer}
-                onChange={(e) => {
-                  setIssuer(e.target.value);
-                  validate(e, false, e.target.value);
-                }}
-              >
-                {getIssuers().map((item) => (
-                  <option key={item.code} value={item.code}>
-                    {item.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <TextInput
-              name="cardholder"
-              type="text"
-              label={__('Cardholder')}
-              value={cardholder}
-              onChange={(e) => setCardholder(e.target.value)}
-              onBlur={validate}
-              error={validateErrors.cardholder}
+        <div className="form-control">
+          <SelectInput
+            className="w-full"
+            name="issuer"
+            label={__('Issuer')}
+            formik={formik}
+            options={formatedIssuers}
+          />
+          <TextInput
+            className="w-full"
+            name="cardholder"
+            type="text"
+            label={__('Cardholder')}
+            formik={formik}
+          />
+          <TextInput
+            className="w-full"
+            name="cardnumber"
+            type="text"
+            label={__('Cardnumber')}
+            formik={formik}
+          />
+          <div className="field my-2 flex">
+            <SelectInput
+              className="w-6/12 mr-1"
+              name="expirationmonth"
+              label={__('Month')}
+              formik={formik}
+              prependOption={<option>{__('Select month')}</option>}
+              options={range(12, 1)}
             />
-            <TextInput
-              name="cardnumber"
-              type="number"
-              label={__('Cardnumber')}
-              value={cardnumber}
-              onChange={(e) => setCardnumber(e.target.value)}
-              onBlur={validate}
-              error={validateErrors.cardnumber}
-            />
-            <div className="date flex gap-4 w-full">
-              <TextInput
-                className="w-full"
-                name="month"
-                type="number"
-                label={__('Month')}
-                value={cardmonth}
-                onChange={(e) => setCardmonth(e.target.value)}
-                onBlur={validate}
-                error={validateErrors.cardmonth}
-              />
-              <TextInput
-                className="w-full"
-                name="year"
-                type="number"
-                label={__('Year')}
-                value={cardyear}
-                onChange={(e) => setCardyear(e.target.value)}
-                onBlur={validate}
-                error={validateErrors.cardyear}
-              />
-            </div>
-            <TextInput
-              className="w-full"
-              name="securitycode"
-              type="number"
-              label={__('Securitycode')}
-              value={securitycode}
-              onChange={(e) => setSecuritycode(e.target.value)}
-              onBlur={validate}
-              error={validateErrors.securitycode}
-            />
-            <p>{__("You'll be redirected to finish the payment.")}</p>
 
-            <PlaceOrder />
-          </>
-        )}
+            <SelectInput
+              className="w-6/12 ml-1"
+              name="expirationyear"
+              label={__('Year')}
+              formik={formik}
+              prependOption={<option>{__('Select year')}</option>}
+              options={range(10, yearStart)}
+            />
+          </div>
+          <TextInput
+            className="w-full"
+            name="cvc"
+            type="number"
+            label={__('Securitycode')}
+            formik={formik}
+          />
+          <p>{__("You'll be redirected to finish the payment.")}</p>
+
+          <PlaceOrder />
+        </div>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -254,5 +186,6 @@ export default Creditcards;
 
 Creditcards.propTypes = {
   method: object.isRequired,
+  selected: object.isRequired,
   actions: object.isRequired,
 };
