@@ -24,7 +24,7 @@ function GiftcardItem({ giftcard, selected, giftcardCodeChange }) {
         </label>
       </div>
       {giftcard.logo !== false && (
-        <img src={giftcard.logo} className="w-12" alt={giftcard.title} />
+        <img width="24" height="24" src={giftcard.logo} alt={giftcard.title} />
       )}
     </div>
   );

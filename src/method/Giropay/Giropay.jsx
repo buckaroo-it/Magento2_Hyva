@@ -31,7 +31,7 @@ function Giropay({ method, selected, actions }) {
         {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label htmlFor={`paymentMethod_${method.code}`}>{method.title}</label>
       </div>
-      <img src={logo} className="w-12" alt={method.title} />
+      <img width="24" height="24" src={logo} alt={method.title} />
     </div>
   );
 
