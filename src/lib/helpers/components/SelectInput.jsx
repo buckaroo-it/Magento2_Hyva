@@ -25,7 +25,7 @@ function SelectInput({
         {label}
       </label>
       <select
-        className={`form-input w-full ${
+        className={`form-select w-full ${
           formik.touched[name] && formik.errors[name] ? 'border-red-500' : ''
         }`}
         name={name}
