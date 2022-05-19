@@ -107,7 +107,9 @@ function IDeal({ method, selected, actions }) {
           }
           options={formatedIssuers}
         />
-        <p>{__("You'll be redirected to finish the payment.")}</p>
+        <p className="mt-2">
+          {__("You'll be redirected to finish the payment.")}
+        </p>
 
         <PlaceOrder />
       </div>
