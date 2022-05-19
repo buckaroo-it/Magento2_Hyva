@@ -20,11 +20,14 @@ function PayPal({ method, selected, actions }) {
         checked={isSelected}
         onChange={actions.change}
       />
-      <div className="text">
-        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-        <label htmlFor={`paymentMethod_${method.code}`}>{method.title}</label>
-        <div className="description">{__('Pay quick and secure')}</div>
-      </div>
+      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+      <label
+        className="text w-full cursor-pointer"
+        htmlFor={`paymentMethod_${method.code}`}
+      >
+        <strong>{method.title}</strong>
+        <div className="description">{__('Credit or Debit')}</div>
+      </label>
       <img height="24" width="24" src={logo} alt="PayPal Logo" />
     </div>
   );
@@ -43,7 +46,7 @@ function PayPal({ method, selected, actions }) {
   return (
     <div id={selected.code}>
       {invoiceRadioInput}
-      <div className="content py-2 px-10">
+      <div className="content py-2 pl-6">
         <p>{__("You'll be redirected to finish the payment.")}</p>
 
         <PlaceOrder />

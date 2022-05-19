@@ -56,29 +56,31 @@ function GiftcardForm({ giftcardCode }) {
 
   return (
     <>
-      <TextInput
-        className="w-full"
-        name="cardnumber"
-        type="text"
-        label={__('Card number:')}
-        formik={formik}
-      />
-      <TextInput
-        className="w-full"
-        name="pin"
-        type="text"
-        label={__('PIN / Security code:')}
-        formik={formik}
-      />
+      <div className="pl-6">
+        <TextInput
+          className="w-full"
+          name="cardnumber"
+          type="text"
+          label={__('Card number:')}
+          formik={formik}
+        />
+        <TextInput
+          className="w-full"
+          name="pin"
+          type="text"
+          label={__('PIN / Security code:')}
+          formik={formik}
+        />
 
-      <div className="field my-2">
-        <button
-          className="btn btn-primary"
-          type="button"
-          onClick={formik.handleSubmit}
-        >
-          {__('Apply Gift Card')}
-        </button>
+        <div className="field my-2">
+          <button
+            className="btn btn-cta"
+            type="button"
+            onClick={formik.handleSubmit}
+          >
+            {__('Apply Gift Card')}
+          </button>
+        </div>
       </div>
     </>
   );

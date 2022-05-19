@@ -17,12 +17,13 @@ function GiftcardItem({ giftcard, selected, giftcardCodeChange }) {
         checked={selected}
         onChange={setSelected}
       />
-      <div className="text">
+      <label
+        className="text w-full cursor-pointer"
+        htmlFor={`paymentMethod_${giftcard.code}`}
+      >
         {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-        <label htmlFor={`paymentMethod_${giftcard.code}`}>
-          {giftcard.title}
-        </label>
-      </div>
+        <strong>{giftcard.title}</strong>
+      </label>
       {giftcard.logo !== false && (
         <img width="24" height="24" src={giftcard.logo} alt={giftcard.title} />
       )}
