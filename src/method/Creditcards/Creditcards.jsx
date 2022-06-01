@@ -143,25 +143,35 @@ function Creditcards({ method, selected, actions }) {
             label={__('Cardholder')}
             formik={formik}
           />
-          <TextInput
-            className="w-full"
-            name="cardnumber"
-            type="text"
-            label={__('Cardnumber')}
-            formik={formik}
-          />
-          <div className="field my-2 flex">
+          <div className="form-control w-1/2 inline-block pr-1">
+            <TextInput
+              className="w-full"
+              name="cardnumber"
+              type="text"
+              label={__('Cardnumber')}
+              formik={formik}
+            />
+          </div>
+          <div className="form-control w-1/2 inline-block pl-1">
+            <TextInput
+              className="w-full"
+              name="cvc"
+              type="number"
+              label={__('Securitycode')}
+              formik={formik}
+            />
+          </div>
+          <div className="form-control w-1/2 inline-block pr-1">
             <SelectInput
-              className="w-6/12 mr-1"
               name="expirationmonth"
               label={__('Month')}
               formik={formik}
               prependOption={<option>{__('Select month')}</option>}
               options={range(12, 1)}
             />
-
+          </div>
+          <div className="form-control w-1/2 inline-block pl-1">
             <SelectInput
-              className="w-6/12 ml-1"
               name="expirationyear"
               label={__('Year')}
               formik={formik}
@@ -169,14 +179,9 @@ function Creditcards({ method, selected, actions }) {
               options={range(10, yearStart)}
             />
           </div>
-          <TextInput
-            className="w-full"
-            name="cvc"
-            type="number"
-            label={__('Securitycode')}
-            formik={formik}
-          />
-          <p>{__("You'll be redirected to finish the payment.")}</p>
+          <p className="mt-2">
+            {__("You'll be redirected to finish the payment.")}
+          </p>
 
           <PlaceOrder />
         </div>
