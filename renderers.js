@@ -7,6 +7,7 @@ import Giropay from './src/method/Giropay';
 import Giftcards from './src/method/Giftcards';
 import Eps from './src/method/Eps';
 import Transfer from './src/method/Transfer';
+import Afterpay from './src/method/Afterpay';
 
 export default {
   buckaroo_magento2_ideal: IDeal,
@@ -18,4 +19,5 @@ export default {
   buckaroo_magento2_giftcards: Giftcards,
   buckaroo_magento2_eps: Eps,
   buckaroo_magento2_transfer: Transfer,
+  buckaroo_magento2_afterpay20: Afterpay,
 };
