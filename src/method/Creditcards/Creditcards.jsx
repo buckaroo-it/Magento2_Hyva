@@ -41,7 +41,7 @@ function Creditcards({ method, selected, actions }) {
         <div className="description">{__('Credit or Debit')}</div>
       </label>
 
-      <img height="24" width="24" src={logo} alt="Creditcards Logo" />
+      <img height="24" width="24" src={logo} alt={method.title} />
     </div>
   );
 

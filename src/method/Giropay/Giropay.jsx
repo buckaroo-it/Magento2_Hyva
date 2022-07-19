@@ -27,11 +27,14 @@ function Giropay({ method, selected, actions }) {
         checked={isSelected}
         onChange={actions.change}
       />
-      <div className="text">
-        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-        <label htmlFor={`paymentMethod_${method.code}`}>{method.title}</label>
-      </div>
-      <img width="24" height="24" src={logo} alt={method.title} />
+      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+      <label
+        className="text w-full cursor-pointer"
+        htmlFor={`paymentMethod_${method.code}`}
+      >
+        <strong>{method.title}</strong>
+      </label>
+      <img height="24" width="24" src={logo} alt={method.title} />
     </div>
   );
 
