@@ -1,4 +1,4 @@
-import _get from 'lodash.get';
+import { get as _get } from 'lodash-es';
 
 import { __ } from '@hyva/react-checkout/i18n';
 

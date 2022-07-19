@@ -29,16 +29,16 @@ function Kbc({ method, selected, actions }) {
     </div>
   );
 
-  if (!isSelected) {
-    return invoiceRadioInput;
-  }
-
   const { registerPaymentAction } = useCheckoutFormContext();
   const onSubmit = useOnSubmit();
 
   useEffect(() => {
     registerPaymentAction(method.code, onSubmit);
   }, [method, registerPaymentAction]);
+
+  if (!isSelected) {
+    return invoiceRadioInput;
+  }
 
   return (
     <div id={selected.code}>

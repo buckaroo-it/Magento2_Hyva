@@ -9,7 +9,7 @@ import { GetPaymentMethodBody } from './helpers/PaymentMethodBody';
 export async function GetBuckarooPaymentInformation(
   dispatch,
   method,
-  additionalData = {},
+  additionalData,
   address,
   email
 ) {

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect } from 'react';
 import { func, shape, object } from 'prop-types';
-import _set from 'lodash.set';
+import { set as _set } from 'lodash-es';
 import { useFormik } from 'formik';
 import { object as YupObject, string as YupString } from 'yup';
 
@@ -34,10 +34,6 @@ function Giropay({ method, selected, actions }) {
       <img width="24" height="24" src={logo} alt={method.title} />
     </div>
   );
-
-  if (!isSelected) {
-    return invoiceRadioInput;
-  }
 
   const { registerPaymentAction } = useCheckoutFormContext();
   const { setErrorMessage } = useAppContext();
@@ -84,6 +80,10 @@ function Giropay({ method, selected, actions }) {
   useEffect(() => {
     registerPaymentAction(method.code, placeOrderWithGiropay);
   }, [method, registerPaymentAction, placeOrderWithGiropay]);
+
+  if (!isSelected) {
+    return invoiceRadioInput;
+  }
 
   return (
     <div id={selected.code}>

@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { func, shape, object } from 'prop-types';
-import _set from 'lodash.set';
-import _get from 'lodash.get';
+import { set as _set, get as _get } from 'lodash-es';
 
 import RadioInput from '@hyva/react-checkout/components/common/Form/RadioInput';
 import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
@@ -30,23 +29,17 @@ function Giftcards({ method, selected, actions }) {
     usePartialPayment();
   }
   const invoiceRadioInput = (
-    <>
-      <div className="title flex">
-        <RadioInput
-          value={method.code}
-          label={method.title}
-          name="paymentMethod"
-          checked={isSelected}
-          onChange={actions.change}
-        />
-        <img src={logo} className="w-12" alt={method.title} />
-      </div>
-    </>
+    <div className="title flex">
+      <RadioInput
+        value={method.code}
+        label={method.title}
+        name="paymentMethod"
+        checked={isSelected}
+        onChange={actions.change}
+      />
+      <img src={logo} className="w-12" alt={method.title} />
+    </div>
   );
-
-  if (!isSelected && !showAsList) {
-    return invoiceRadioInput;
-  }
 
   const availableGiftcards = getConfig('avaibleGiftcards');
 
@@ -117,6 +110,10 @@ function Giftcards({ method, selected, actions }) {
   useEffect(() => {
     registerPaymentAction(method.code, placeOrderWithGiftcards);
   }, [method, registerPaymentAction, placeOrderWithGiftcards]);
+
+  if (!isSelected && !showAsList) {
+    return invoiceRadioInput;
+  }
 
   if (showAsList) {
     return availableGiftcards.map((giftcard) => (

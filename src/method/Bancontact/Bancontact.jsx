@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { object } from 'prop-types';
-import _set from 'lodash.set';
+import { set as _set } from 'lodash-es';
 
 import { useFormik } from 'formik';
 
@@ -37,10 +37,6 @@ function Bancontact({ method, selected, actions }) {
       <img width="32" height="32" src={logo} alt={method.title} />
     </div>
   );
-
-  if (!isSelected) {
-    return invoiceRadioInput;
-  }
 
   const { registerPaymentAction } = useCheckoutFormContext();
   const { setErrorMessage } = useAppContext();
@@ -87,6 +83,9 @@ function Bancontact({ method, selected, actions }) {
     registerPaymentAction(method.code, placeOrderWithBancontact);
   }, [method, registerPaymentAction, placeOrderWithBancontact]);
 
+  if (!isSelected) {
+    return invoiceRadioInput;
+  }
   return (
     <div id={selected.code}>
       {invoiceRadioInput}

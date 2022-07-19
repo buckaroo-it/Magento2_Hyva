@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback } from 'react';
 import { object } from 'prop-types';
-import _set from 'lodash.set';
+import { set as _set } from 'lodash-es';
 
 import { useFormik } from 'formik';
 
@@ -44,10 +44,6 @@ function Creditcards({ method, selected, actions }) {
       <img height="24" width="24" src={logo} alt="Creditcards Logo" />
     </div>
   );
-
-  if (!isSelected) {
-    return invoiceRadioInput;
-  }
 
   const { registerPaymentAction } = useCheckoutFormContext();
   const { setErrorMessage } = useAppContext();
@@ -123,6 +119,10 @@ function Creditcards({ method, selected, actions }) {
     value: issuer.code,
   });
   const formatedIssuers = creditCardsConfig.creditcards.map(mapIssuer);
+
+  if (!isSelected) {
+    return invoiceRadioInput;
+  }
 
   return (
     <div id={selected.code}>
