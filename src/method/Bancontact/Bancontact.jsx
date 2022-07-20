@@ -69,7 +69,7 @@ function Bancontact({ method, selected, actions }) {
         if (Object.keys(errors).length) {
           setErrorMessage(__('One or more fields are required'));
           scrollToElement(selected.code);
-          return;
+          return {};
         }
       }
       const encryptedCardData = await encryptCardData(formikValues);
@@ -77,7 +77,7 @@ function Bancontact({ method, selected, actions }) {
         client_side_mode: clientSideMode,
         customer_encrypteddata: encryptedCardData,
       });
-      await onSubmit(values);
+      return onSubmit(values);
     },
     [onSubmit, setErrorMessage, clientSideMode, formikValues]
   );

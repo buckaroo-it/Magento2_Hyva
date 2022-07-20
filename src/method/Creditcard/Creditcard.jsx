@@ -68,7 +68,6 @@ function Creditcard({ method, selected, actions }) {
     values: { cardType },
   } = formik;
 
-  console.warn(cardType);
   const placeOrderWithCreditcard = useCallback(
     async (values) => {
       const errors = await validateForm();
@@ -76,14 +75,14 @@ function Creditcard({ method, selected, actions }) {
       if (Object.keys(errors).length) {
         setErrorMessage(__('One or more fields are required'));
         scrollToElement(selected.code);
-        return;
+        return {};
       }
 
       _set(values, ADDITIONAL_DATA_KEY, {
         card_type: cardType,
       });
 
-      await onSubmit(values);
+      return onSubmit(values);
     },
     [onSubmit, setErrorMessage, cardType]
   );

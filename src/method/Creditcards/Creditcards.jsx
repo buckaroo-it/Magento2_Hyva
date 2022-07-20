@@ -98,14 +98,14 @@ function Creditcards({ method, selected, actions }) {
       if (Object.keys(errors).length) {
         setErrorMessage(__('One or more fields are required'));
         scrollToElement(selected.code);
-        return;
+        return {};
       }
       const encryptedCardData = await encryptCardData(formikValues);
       _set(values, ADDITIONAL_DATA_KEY, {
         customer_encrypteddata: encryptedCardData,
         customer_creditcardcompany: formikValues.issuer,
       });
-      await onSubmit(values);
+      return onSubmit(values);
     },
     [onSubmit, setErrorMessage, formikValues]
   );

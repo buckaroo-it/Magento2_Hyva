@@ -1,3 +1,0 @@
-import restBuckarooGuestPaymentInformation from './restBuckarooGuestPaymentInformation';
-
-export default restBuckarooGuestPaymentInformation;

@@ -68,14 +68,14 @@ function Giropay({ method, selected, actions }) {
       if (Object.keys(errors).length) {
         setErrorMessage(__('One or more fields are required'));
         scrollToElement(selected.code);
-        return;
+        return {};
       }
 
       _set(values, ADDITIONAL_DATA_KEY, {
         customer_bic: bic,
       });
 
-      await onSubmit(values);
+      return onSubmit(values);
     },
     [onSubmit, setErrorMessage, bic]
   );

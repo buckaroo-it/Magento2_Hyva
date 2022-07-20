@@ -62,12 +62,12 @@ function Giftcards({ method, selected, actions }) {
     async (values) => {
       if (showAsList && canPlaceOrder) {
         setErrorMessage(__('Cannot pay with giftcards'));
-        return;
+        return {};
       }
       _set(values, ADDITIONAL_DATA_KEY, {
         giftcard_method: giftcardCode,
       });
-      await onSubmit(values);
+      return onSubmit(values);
     },
     [onSubmit, setErrorMessage, canPlaceOrder]
   );

@@ -89,7 +89,7 @@ function Afterpay({ method, selected, actions }) {
       if (Object.keys(errors).length) {
         setErrorMessage(__('One or more fields are required'));
         scrollToElement(selected.code);
-        return;
+        return {};
       }
       _set(values, ADDITIONAL_DATA_KEY, {
         customer_telephone: formikValues.telephone,
@@ -100,7 +100,7 @@ function Afterpay({ method, selected, actions }) {
         customer_gender: '1',
         customer_billingName: cart.billing_address.fullName,
       });
-      await onSubmit(values);
+      return onSubmit(values);
     },
     [onSubmit, setErrorMessage, formikValues]
   );
