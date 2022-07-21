@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import _set from 'lodash.set';
+import { set as _set } from 'lodash-es';
 import { useFormikContext } from 'formik';
 
 import useOnSubmit from '../../../lib/hooks/useOnSubmit';
@@ -42,9 +42,9 @@ export default function useCaptureFunds() {
       _set(values, ADDITIONAL_DATA_KEY, data);
       await onSubmit(values);
       return {
-          status: ApplePaySession.STATUS_SUCCESS,
-          errors: []
-      }
+        status: window.ApplePaySession.STATUS_SUCCESS,
+        errors: [],
+      };
     },
     [values, onSubmit]
   );
