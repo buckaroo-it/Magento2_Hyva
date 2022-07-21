@@ -68,7 +68,6 @@ function Creditcard({ method, selected, actions }) {
     values: { cardType },
   } = formik;
 
-  console.warn(cardType);
   const placeOrderWithCreditcard = useCallback(
     async (values) => {
       const errors = await validateForm();

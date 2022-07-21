@@ -73,16 +73,18 @@ function Giftcards({ method, selected, actions }) {
   );
 
   useEffect(() => {
-    setCanPlaceOrder(
-      cart.partial_payment && cart.partial_payment.remainder_amount === 0
-    );
-  }, [cart]);
+    if (isSelected) {
+      setCanPlaceOrder(
+        cart.partial_payment && cart.partial_payment.remainder_amount === 0
+      );
+    }
+  }, [cart, isSelected]);
 
   useEffect(() => {
-    if (canPlaceOrder) {
+    if (canPlaceOrder && isSelected) {
       placeOrder();
     }
-  }, [canPlaceOrder]);
+  }, [canPlaceOrder, isSelected]);
 
   const giftcardCodeChange = async (selectedGiftcardCode) => {
     const methodSelected = _get(methodList, `${method.code}.code`);
@@ -97,7 +99,11 @@ function Giftcards({ method, selected, actions }) {
   };
 
   useEffect(() => {
-    if (cart.partial_payment && cart.partial_payment.transactions.length) {
+    if (
+      cart.partial_payment &&
+      cart.partial_payment.transactions.length &&
+      isSelected
+    ) {
       setCartInfo({
         ...cart,
         available_payment_methods: {
@@ -105,7 +111,7 @@ function Giftcards({ method, selected, actions }) {
         },
       });
     }
-  }, [cart.partial_payment]);
+  }, [cart.partial_payment, isSelected]);
 
   useEffect(() => {
     registerPaymentAction(method.code, placeOrderWithGiftcards);

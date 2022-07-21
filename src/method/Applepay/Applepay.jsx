@@ -51,7 +51,7 @@ function Applepay({ method, selected, actions }) {
   }, []);
 
   useEffect(() => {
-    if (canPay) {
+    if (canPay && isSelected) {
       const options = new ApplePay.PayOptions(
         config.storeName,
         config.country,
@@ -70,7 +70,7 @@ function Applepay({ method, selected, actions }) {
       );
       ApplePay.PayPayment(options);
     }
-  }, [canPay, config, cart]);
+  }, [canPay, config, cart, isSelected]);
   const { registerPaymentAction } = useCheckoutFormContext();
   const { setErrorMessage } = useAppContext();
 

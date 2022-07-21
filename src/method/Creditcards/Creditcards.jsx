@@ -85,11 +85,13 @@ function Creditcards({ method, selected, actions }) {
   } = formik;
 
   useEffect(() => {
-    const issuer = determineIssuer(formikValues.cardnumber);
-    if (issuer) {
-      setFieldValue('issuer', issuer);
+    if (isSelected) {
+      const issuer = determineIssuer(formikValues.cardnumber);
+      if (issuer) {
+        setFieldValue('issuer', issuer);
+      }
     }
-  }, [formikValues.cardnumber, touched.cardnumber, setFieldValue]);
+  }, [formikValues.cardnumber, touched.cardnumber, setFieldValue, isSelected]);
 
   const placeOrderWithCreditcards = useCallback(
     async (values) => {
