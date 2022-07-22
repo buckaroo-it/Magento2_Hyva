@@ -69,12 +69,12 @@ function IDeal({ method, selected, actions }) {
       if (Object.keys(errors).length) {
         setErrorMessage(__('One or more fields are required'));
         scrollToElement(selected.code);
-        return;
+        return {};
       }
       _set(values, ADDITIONAL_DATA_KEY, {
         issuer,
       });
-      await onSubmit(values);
+      return onSubmit(values);
     },
     [onSubmit, setErrorMessage, issuer]
   );

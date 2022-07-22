@@ -1,11 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { func, shape, object } from 'prop-types';
 
 import RadioInput from '@hyva/react-checkout/components/common/Form/RadioInput';
 import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
 import { __ } from '@hyva/react-checkout/i18n';
+import { set as _set } from 'lodash-es';
 
+import { ADDITIONAL_DATA_KEY } from '../../lib/helpers/AdditionalBuckarooDataKey';
 import useOnSubmit from '../../lib/hooks/useOnSubmit';
 import logo from '../../../assets/Kbc.svg';
 
@@ -33,9 +35,16 @@ function Kbc({ method, selected, actions }) {
 
   const { registerPaymentAction } = useCheckoutFormContext();
   const onSubmit = useOnSubmit();
+  const placeOrder = useCallback(
+    (values) => {
+      _set(values, ADDITIONAL_DATA_KEY, {});
+      return onSubmit(values);
+    },
+    [onSubmit]
+  );
 
   useEffect(() => {
-    registerPaymentAction(method.code, onSubmit);
+    registerPaymentAction(method.code, placeOrder);
   }, [method, registerPaymentAction]);
 
   if (!isSelected) {

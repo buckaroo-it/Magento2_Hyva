@@ -15,13 +15,12 @@ function RadioGroup({
         if (isObject(option)) {
           const { name: optionName, value: optionValue } = option;
           return (
-            <div className="flex items-center">
+            <div className="flex items-center" key={optionValue}>
               <input
                 className="mr-2"
                 type="radio"
                 name={name}
                 id={`${name}_${optionValue}`}
-                key={optionValue}
                 {...formik.getFieldProps(name)}
                 value={optionValue}
                 {...inputProps}
@@ -36,13 +35,12 @@ function RadioGroup({
           );
         }
         return (
-          <div className="flex items-center">
+          <div className="flex items-center" key={option}>
             <input
               className="mr-2"
               type="radio"
               name={name}
               id={`${name}_${option}`}
-              key={option}
               {...formik.getFieldProps(name)}
               value={option}
               {...inputProps}
