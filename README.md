@@ -32,7 +32,7 @@ Before you start, please make sure that you've installed the following plugins i
 
 **Run  `npm i`  again to process the changes.**
 
-In order to display the payment summary for partial payments using giftcards, you'll need copy (override) all the files & folders from: `Hyva/CheckoutExample/reactapp/src/paymentMethods/buckaroo/src/lib/overrides`  to  `Hyva/CheckoutExample/reactapp/src`
+In order to display the payment summary for partial payments using giftcards, you'll need to copy (override) all the files & folders from: `Hyva/CheckoutExample/reactapp/src/paymentMethods/buckaroo/src/lib/overrides`  to  `Hyva/CheckoutExample/reactapp/src`
 
 ---
 ### Supported Payment Methods
