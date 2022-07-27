@@ -55,8 +55,10 @@ Currently not all payment methods are supported in our Magento 2 Hyvä checkout 
 - Bancontact
 - Creditcards
 - EPS
+- Giftcards
 - Giropay
 - iDEAL
+- KBC
 - PayPal
 - SEPA (Bank transfer)
 
