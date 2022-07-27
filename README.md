@@ -3,6 +3,7 @@
 </p>
 
 # Buckaroo Magento2 Hyvä checkout extension
+Make payments on your Magento Hyvä SPA/PWA application using our plugin that integrates with the Hyvä checkout
 
 ### Index
 - [Installation](#installation)
@@ -32,7 +33,19 @@ Before you start, please make sure that you've installed the following plugins i
 
 **Run  `npm i`  again to process the changes.**
 
-In order to display the payment summary for partial payments using giftcards, you'll need to copy (override) all the files & folders from: `Hyva/CheckoutExample/reactapp/src/paymentMethods/buckaroo/src/lib/overrides`  to  `Hyva/CheckoutExample/reactapp/src`
+In order to display the payment summary for partial payments using giftcards, you'll need copy (override) all the files & folders from: `Hyva/CheckoutExample/reactapp/src/paymentMethods/buckaroo/src/lib/overrides` to `Hyva/CheckoutExample/reactapp/src`
+
+### Upgrading
+
+To update the plugin you just need to use git to fetch the latest changes from github, after that you build the react app again using npm
+
+`cd Hyva/CheckoutExample/reactapp/src/paymentMethods/buckaroo`
+
+`git pull`
+
+`cd Hyva/CheckoutExample/reactapp`
+
+`npm run build`
 
 ---
 ### Supported Payment Methods
