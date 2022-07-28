@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { object } from 'prop-types';
-import _set from 'lodash.set';
+import { set as _set } from 'lodash-es';
 
 import { useFormik } from 'formik';
 
@@ -30,17 +30,16 @@ function Bancontact({ method, selected, actions }) {
         checked={isSelected}
         onChange={actions.change}
       />
-      <div className="text">
-        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-        <label htmlFor={`paymentMethod_${method.code}`}>{method.title}</label>
-      </div>
-      <img width="32" height="32" src={logo} alt={method.title} />
+      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+      <label
+        className="text w-full cursor-pointer"
+        htmlFor={`paymentMethod_${method.code}`}
+      >
+        <strong>{method.title}</strong>
+      </label>
+      <img height="24" width="24" src={logo} alt={method.title} />
     </div>
   );
-
-  if (!isSelected) {
-    return invoiceRadioInput;
-  }
 
   const { registerPaymentAction } = useCheckoutFormContext();
   const { setErrorMessage } = useAppContext();
@@ -70,7 +69,7 @@ function Bancontact({ method, selected, actions }) {
         if (Object.keys(errors).length) {
           setErrorMessage(__('One or more fields are required'));
           scrollToElement(selected.code);
-          return;
+          return {};
         }
       }
       const encryptedCardData = await encryptCardData(formikValues);
@@ -78,7 +77,7 @@ function Bancontact({ method, selected, actions }) {
         client_side_mode: clientSideMode,
         customer_encrypteddata: encryptedCardData,
       });
-      await onSubmit(values);
+      return onSubmit(values);
     },
     [onSubmit, setErrorMessage, clientSideMode, formikValues]
   );
@@ -87,6 +86,9 @@ function Bancontact({ method, selected, actions }) {
     registerPaymentAction(method.code, placeOrderWithBancontact);
   }, [method, registerPaymentAction, placeOrderWithBancontact]);
 
+  if (!isSelected) {
+    return invoiceRadioInput;
+  }
   return (
     <div id={selected.code}>
       {invoiceRadioInput}

@@ -13,10 +13,12 @@ import useAppContext from '@hyva/react-checkout/hook/useAppContext';
 
 import useOnSubmit from '../../lib/hooks/useOnSubmit';
 import { ADDITIONAL_DATA_KEY } from '../../lib/helpers/AdditionalBuckarooDataKey';
-import logo from '../../../assets/Giropay.svg';
-import TextInput from '../../lib/helpers/components/TextInput';
+import logo from '../../../assets/Creditcards.svg';
+import SelectInput from '../../lib/helpers/components/SelectInput';
+import RadioGroup from '../../lib/helpers/components/RadioGroup';
+import { getConfig } from '../../../config';
 
-function Giropay({ method, selected, actions }) {
+function Creditcard({ method, selected, actions }) {
   const isSelected = method.code === selected.code;
 
   const invoiceRadioInput = (
@@ -43,14 +45,19 @@ function Giropay({ method, selected, actions }) {
   const onSubmit = useOnSubmit();
 
   const requiredMessage = __('This is a required field.');
+  const { selectionType, cards } = getConfig('creditcard');
 
+  const formattedCards = cards.map((card) => ({
+    name: card.name,
+    value: card.code,
+  }));
   const validationSchema = YupObject({
-    bic: YupString().required(requiredMessage),
+    cardType: YupString().required(requiredMessage),
   });
 
   const formik = useFormik({
     initialValues: {
-      bic: '',
+      cardType: '',
     },
     validationSchema,
   });
@@ -58,10 +65,10 @@ function Giropay({ method, selected, actions }) {
   const {
     validateForm,
     submitForm,
-    values: { bic },
+    values: { cardType },
   } = formik;
 
-  const placeOrderWithGiropay = useCallback(
+  const placeOrderWithCreditcard = useCallback(
     async (values) => {
       const errors = await validateForm();
       submitForm();
@@ -72,17 +79,17 @@ function Giropay({ method, selected, actions }) {
       }
 
       _set(values, ADDITIONAL_DATA_KEY, {
-        customer_bic: bic,
+        card_type: cardType,
       });
 
       return onSubmit(values);
     },
-    [onSubmit, setErrorMessage, bic]
+    [onSubmit, setErrorMessage, cardType]
   );
 
   useEffect(() => {
-    registerPaymentAction(method.code, placeOrderWithGiropay);
-  }, [method, registerPaymentAction, placeOrderWithGiropay]);
+    registerPaymentAction(method.code, placeOrderWithCreditcard);
+  }, [method, registerPaymentAction, placeOrderWithCreditcard]);
 
   if (!isSelected) {
     return invoiceRadioInput;
@@ -91,22 +98,38 @@ function Giropay({ method, selected, actions }) {
   return (
     <div id={selected.code}>
       {invoiceRadioInput}
-      <TextInput
-        className="w-full"
-        name="bic"
-        type="text"
-        label={__('BIC:')}
-        formik={formik}
-      />
+
+      {selectionType === '2' ? (
+        <SelectInput
+          name="cardType"
+          label={__('Bank')}
+          formik={formik}
+          options={formattedCards}
+          prependOption={
+            <option disabled value="">
+              {__('Select a bank')}
+            </option>
+          }
+        />
+      ) : null}
+
+      {selectionType === '1' ? (
+        <RadioGroup
+          name="cardType"
+          className="ml-5"
+          formik={formik}
+          options={formattedCards}
+        />
+      ) : null}
       <PlaceOrder />
     </div>
   );
 }
 
-Giropay.propTypes = {
+Creditcard.propTypes = {
   method: object.isRequired,
   selected: object.isRequired,
   actions: shape({ change: func }).isRequired,
 };
 
-export default Giropay;
+export default Creditcard;

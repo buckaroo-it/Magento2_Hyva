@@ -1,6 +1,6 @@
 import React, { useEffect, useCallback } from 'react';
 import { object } from 'prop-types';
-import _set from 'lodash.set';
+import { set as _set } from 'lodash-es';
 
 import { useFormik } from 'formik';
 
@@ -43,10 +43,6 @@ function IDeal({ method, selected, actions }) {
     </div>
   );
 
-  if (!isSelected) {
-    return invoiceRadioInput;
-  }
-
   const { registerPaymentAction } = useCheckoutFormContext();
   const { setErrorMessage } = useAppContext();
   const onSubmit = useOnSubmit();
@@ -73,12 +69,12 @@ function IDeal({ method, selected, actions }) {
       if (Object.keys(errors).length) {
         setErrorMessage(__('One or more fields are required'));
         scrollToElement(selected.code);
-        return;
+        return {};
       }
       _set(values, ADDITIONAL_DATA_KEY, {
         issuer,
       });
-      await onSubmit(values);
+      return onSubmit(values);
     },
     [onSubmit, setErrorMessage, issuer]
   );
@@ -86,6 +82,10 @@ function IDeal({ method, selected, actions }) {
   useEffect(() => {
     registerPaymentAction(method.code, palaceOrderWithIdeal);
   }, [method, registerPaymentAction, palaceOrderWithIdeal]);
+
+  if (!isSelected) {
+    return invoiceRadioInput;
+  }
 
   const mapIssuer = (origIssuer) => ({
     name: origIssuer.name,

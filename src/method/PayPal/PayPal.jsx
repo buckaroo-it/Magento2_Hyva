@@ -1,11 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { object } from 'prop-types';
 
 import RadioInput from '@hyva/react-checkout/components/common/Form/RadioInput';
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
 import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
 import { __ } from '@hyva/react-checkout/i18n';
+import { set as _set } from 'lodash-es';
 
+import { ADDITIONAL_DATA_KEY } from '../../lib/helpers/AdditionalBuckarooDataKey';
 import logo from '../../../assets/Paypal.svg';
 import useOnSubmit from '../../lib/hooks/useOnSubmit';
 
@@ -32,16 +34,23 @@ function PayPal({ method, selected, actions }) {
     </div>
   );
 
+  const { registerPaymentAction } = useCheckoutFormContext();
+  const onSubmit = useOnSubmit();
+  const placeOrder = useCallback(
+    (values) => {
+      _set(values, ADDITIONAL_DATA_KEY, {});
+      return onSubmit(values);
+    },
+    [onSubmit]
+  );
+
+  useEffect(() => {
+    registerPaymentAction(method.code, placeOrder);
+  }, [method, registerPaymentAction]);
+
   if (!isSelected) {
     return invoiceRadioInput;
   }
-
-  const { registerPaymentAction } = useCheckoutFormContext();
-  const onSubmit = useOnSubmit();
-
-  useEffect(() => {
-    registerPaymentAction(method.code, onSubmit);
-  }, [method, registerPaymentAction, onSubmit]);
 
   return (
     <div id={selected.code}>

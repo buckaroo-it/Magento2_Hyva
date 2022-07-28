@@ -3,6 +3,7 @@ import { object } from 'prop-types';
 import { set as _set } from 'lodash-es';
 
 import { useFormik } from 'formik';
+import { object as YupObject, string as YupString, bool as YupBool } from 'yup';
 
 import RadioInput from '@hyva/react-checkout/components/common/Form/RadioInput';
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
@@ -10,18 +11,17 @@ import useAppContext from '@hyva/react-checkout/hook/useAppContext';
 import { scrollToElement } from '@hyva/react-checkout/utils/form';
 import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
 import { __ } from '@hyva/react-checkout/i18n';
+import useCartContext from '@hyva/react-checkout/hook/useCartContext';
 
 import useOnSubmit from '../../lib/hooks/useOnSubmit';
-import logo from '../../../assets/Creditcards.svg';
+import logo from '../../../assets/AfterPay.svg';
 import { getConfig } from '../../../config';
-import encryptCardData from '../../lib/helpers/EncryptCardData';
 import { ADDITIONAL_DATA_KEY } from '../../lib/helpers/AdditionalBuckarooDataKey';
-import { validationSchema } from './Validators';
 import TextInput from '../../lib/helpers/components/TextInput';
-import SelectInput from '../../lib/helpers/components/SelectInput';
-import determineIssuer from './helpers/DetermineIssuer';
+import CheckboxInput from '../../lib/helpers/components/CheckboxInput';
+import { determineTosLink, showCOC } from './helper';
 
-function Creditcards({ method, selected, actions }) {
+function Afterpay({ method, selected, actions }) {
   const isSelected = method.code === selected.code;
 
   const invoiceRadioInput = (
@@ -38,7 +38,6 @@ function Creditcards({ method, selected, actions }) {
         htmlFor={`paymentMethod_${method.code}`}
       >
         <strong>{method.title}</strong>
-        <div className="description">{__('Credit or Debit')}</div>
       </label>
 
       <img height="24" width="24" src={logo} alt={method.title} />
@@ -47,51 +46,41 @@ function Creditcards({ method, selected, actions }) {
 
   const { registerPaymentAction } = useCheckoutFormContext();
   const { setErrorMessage } = useAppContext();
+  const { cart } = useCartContext();
   const onSubmit = useOnSubmit();
 
-  const creditCardsConfig = getConfig('creditcards');
+  const config = getConfig('afterpay20');
 
-  const getFirstCard = () => {
-    const cards = creditCardsConfig.creditcards;
-    if (!cards || !cards.length) {
-      return '';
-    }
-    return cards[0].code;
-  };
-
-  const yearStart = new Date().getFullYear();
-
-  const range = (size, startAt = 0) =>
-    [...Array(size).keys()].map((i) => i + startAt);
+  const requiredMessage = __('This is a required field.');
+  const validationSchema = YupObject({
+    telephone: YupString().required(requiredMessage),
+    dob: YupString()
+      .required(requiredMessage)
+      .bkIs18years(__('You should be at least 18 years old.')),
+    tos: YupBool().oneOf([true], requiredMessage),
+    identificationNumber: YupString().when('isCompany', {
+      is: () => cart.billing_address.country === 'FI',
+      then: YupString().required(requiredMessage),
+      otherwise: YupString(),
+    }),
+    coc: YupString().when('isb2b', {
+      is: () => showCOC(config.is_b2b, cart),
+      then: YupString().required(requiredMessage),
+      otherwise: YupString(),
+    }),
+  });
 
   const formik = useFormik({
     initialValues: {
-      cardholder: '',
-      cardnumber: '',
-      expirationmonth: '',
-      expirationyear: '',
-      cvc: '',
-      issuer: getFirstCard(),
+      telephone: '',
+      dob: '',
+      identificationNumber: '',
+      tos: false,
+      coc: '',
     },
     validationSchema,
   });
-
-  const {
-    validateForm,
-    submitForm,
-    values: formikValues,
-    touched,
-    setFieldValue,
-  } = formik;
-
-  useEffect(() => {
-    if (isSelected) {
-      const issuer = determineIssuer(formikValues.cardnumber);
-      if (issuer) {
-        setFieldValue('issuer', issuer);
-      }
-    }
-  }, [formikValues.cardnumber, touched.cardnumber, setFieldValue, isSelected]);
+  const { validateForm, submitForm, values: formikValues } = formik;
 
   const placeOrderWithCreditcards = useCallback(
     async (values) => {
@@ -102,10 +91,14 @@ function Creditcards({ method, selected, actions }) {
         scrollToElement(selected.code);
         return {};
       }
-      const encryptedCardData = await encryptCardData(formikValues);
       _set(values, ADDITIONAL_DATA_KEY, {
-        customer_encrypteddata: encryptedCardData,
-        customer_creditcardcompany: formikValues.issuer,
+        customer_telephone: formikValues.telephone,
+        customer_identificationNumber: formikValues.identificationNumber,
+        customer_DoB: formikValues.dob,
+        termsCondition: formikValues.tos,
+        customer_coc: formikValues.coc,
+        customer_gender: '1',
+        customer_billingName: cart.billing_address.fullName,
       });
       return onSubmit(values);
     },
@@ -116,12 +109,6 @@ function Creditcards({ method, selected, actions }) {
     registerPaymentAction(method.code, placeOrderWithCreditcards);
   }, [method, registerPaymentAction, placeOrderWithCreditcards]);
 
-  const mapIssuer = (issuer) => ({
-    name: issuer.name,
-    value: issuer.code,
-  });
-  const formatedIssuers = creditCardsConfig.creditcards.map(mapIssuer);
-
   if (!isSelected) {
     return invoiceRadioInput;
   }
@@ -131,59 +118,62 @@ function Creditcards({ method, selected, actions }) {
       {invoiceRadioInput}
       <div className="content py-2 pl-6">
         <div className="form-control">
-          <SelectInput
+          <TextInput
             className="w-full"
-            name="issuer"
-            label={__('Issuer')}
+            name="telephone"
+            type="text"
+            label={__('Telephone:')}
             formik={formik}
-            options={formatedIssuers}
           />
           <TextInput
             className="w-full"
-            name="cardholder"
-            type="text"
-            label={__('Cardholder')}
+            name="dob"
+            type="date"
+            label={__('Date of Birth:')}
             formik={formik}
           />
-          <div className="form-control w-1/2 inline-block pr-1">
+          {cart.billing_address.country === 'FI' ? (
             <TextInput
               className="w-full"
-              name="cardnumber"
+              name="identificationNumber"
               type="text"
-              label={__('Cardnumber')}
+              label={__('Identification number:')}
               formik={formik}
             />
-          </div>
-          <div className="form-control w-1/2 inline-block pl-1">
+          ) : null}
+
+          {showCOC(config.is_b2b, cart) ? (
             <TextInput
               className="w-full"
-              name="cvc"
-              type="number"
-              label={__('Securitycode')}
+              name="coc"
+              type="text"
+              label={__('CoC-number:')}
               formik={formik}
             />
-          </div>
-          <div className="form-control w-1/2 inline-block pr-1">
-            <SelectInput
-              name="expirationmonth"
-              label={__('Month')}
-              formik={formik}
-              prependOption={<option>{__('Select month')}</option>}
-              options={range(12, 1)}
-            />
-          </div>
-          <div className="form-control w-1/2 inline-block pl-1">
-            <SelectInput
-              name="expirationyear"
-              label={__('Year')}
-              formik={formik}
-              prependOption={<option>{__('Select year')}</option>}
-              options={range(10, yearStart)}
-            />
-          </div>
-          <p className="mt-2">
-            {__("You'll be redirected to finish the payment.")}
-          </p>
+          ) : null}
+
+          <CheckboxInput
+            name="tos"
+            label={__(
+              'Yes, I accept the terms and condition for the use of Afterpay.'
+            )}
+            formik={formik}
+            labelLink={determineTosLink(cart.billing_address.country)}
+          />
+
+          {cart.billing_address.country === 'BE' ? (
+            <>
+              (Or click here for the French translation:
+              <a
+                target="_blank"
+                rel="noreferrer"
+                href={determineTosLink('FR_BE')}
+              >
+                terms and condition
+              </a>
+              )
+            </>
+          ) : null}
 
           <PlaceOrder />
         </div>
@@ -192,9 +182,9 @@ function Creditcards({ method, selected, actions }) {
   );
 }
 
-export default Creditcards;
+export default Afterpay;
 
-Creditcards.propTypes = {
+Afterpay.propTypes = {
   method: object.isRequired,
   selected: object.isRequired,
   actions: object.isRequired,

@@ -1,17 +1,17 @@
 import React, { useEffect, useCallback } from 'react';
-import { func, shape, object } from 'prop-types';
+import { object } from 'prop-types';
 
 import RadioInput from '@hyva/react-checkout/components/common/Form/RadioInput';
-import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
+import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
 import { __ } from '@hyva/react-checkout/i18n';
 import { set as _set } from 'lodash-es';
 
 import { ADDITIONAL_DATA_KEY } from '../../lib/helpers/AdditionalBuckarooDataKey';
+import logo from '../../../assets/EPS.svg';
 import useOnSubmit from '../../lib/hooks/useOnSubmit';
-import logo from '../../../assets/Kbc.svg';
 
-function Kbc({ method, selected, actions }) {
+function Eps({ method, selected, actions }) {
   const isSelected = method.code === selected.code;
 
   const invoiceRadioInput = (
@@ -54,16 +54,19 @@ function Kbc({ method, selected, actions }) {
   return (
     <div id={selected.code}>
       {invoiceRadioInput}
-      <small>{__("You'll be redirected to finish the payment.")}</small>
-      <PlaceOrder />
+      <div className="content py-2 pl-6">
+        <p>{__("You'll be redirected to finish the payment.")}</p>
+
+        <PlaceOrder />
+      </div>
     </div>
   );
 }
 
-Kbc.propTypes = {
+export default Eps;
+
+Eps.propTypes = {
   method: object.isRequired,
   selected: object.isRequired,
-  actions: shape({ change: func }).isRequired,
+  actions: object.isRequired,
 };
-
-export default Kbc;

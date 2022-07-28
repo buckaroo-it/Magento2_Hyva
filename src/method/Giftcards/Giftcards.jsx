@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { func, shape, object } from 'prop-types';
-import _set from 'lodash.set';
-import _get from 'lodash.get';
+import { set as _set, get as _get } from 'lodash-es';
 
 import RadioInput from '@hyva/react-checkout/components/common/Form/RadioInput';
 import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
@@ -30,23 +29,17 @@ function Giftcards({ method, selected, actions }) {
     usePartialPayment();
   }
   const invoiceRadioInput = (
-    <>
-      <div className="title flex">
-        <RadioInput
-          value={method.code}
-          label={method.title}
-          name="paymentMethod"
-          checked={isSelected}
-          onChange={actions.change}
-        />
-        <img src={logo} className="w-12" alt={method.title} />
-      </div>
-    </>
+    <div className="title flex">
+      <RadioInput
+        value={method.code}
+        label={method.title}
+        name="paymentMethod"
+        checked={isSelected}
+        onChange={actions.change}
+      />
+      <img src={logo} className="w-12" alt={method.title} />
+    </div>
   );
-
-  if (!isSelected && !showAsList) {
-    return invoiceRadioInput;
-  }
 
   const availableGiftcards = getConfig('avaibleGiftcards');
 
@@ -69,27 +62,29 @@ function Giftcards({ method, selected, actions }) {
     async (values) => {
       if (showAsList && canPlaceOrder) {
         setErrorMessage(__('Cannot pay with giftcards'));
-        return;
+        return {};
       }
       _set(values, ADDITIONAL_DATA_KEY, {
         giftcard_method: giftcardCode,
       });
-      await onSubmit(values);
+      return onSubmit(values);
     },
     [onSubmit, setErrorMessage, canPlaceOrder]
   );
 
   useEffect(() => {
-    setCanPlaceOrder(
-      cart.partial_payment && cart.partial_payment.remainder_amount === 0
-    );
-  }, [cart]);
+    if (isSelected) {
+      setCanPlaceOrder(
+        cart.partial_payment && cart.partial_payment.remainder_amount === 0
+      );
+    }
+  }, [cart, isSelected]);
 
   useEffect(() => {
-    if (canPlaceOrder) {
+    if (canPlaceOrder && isSelected) {
       placeOrder();
     }
-  }, [canPlaceOrder]);
+  }, [canPlaceOrder, isSelected]);
 
   const giftcardCodeChange = async (selectedGiftcardCode) => {
     const methodSelected = _get(methodList, `${method.code}.code`);
@@ -104,7 +99,11 @@ function Giftcards({ method, selected, actions }) {
   };
 
   useEffect(() => {
-    if (cart.partial_payment && cart.partial_payment.transactions.length) {
+    if (
+      cart.partial_payment &&
+      cart.partial_payment.transactions.length &&
+      isSelected
+    ) {
       setCartInfo({
         ...cart,
         available_payment_methods: {
@@ -112,11 +111,15 @@ function Giftcards({ method, selected, actions }) {
         },
       });
     }
-  }, [cart.partial_payment]);
+  }, [cart.partial_payment, isSelected]);
 
   useEffect(() => {
     registerPaymentAction(method.code, placeOrderWithGiftcards);
   }, [method, registerPaymentAction, placeOrderWithGiftcards]);
+
+  if (!isSelected && !showAsList) {
+    return invoiceRadioInput;
+  }
 
   if (showAsList) {
     return availableGiftcards.map((giftcard) => (
