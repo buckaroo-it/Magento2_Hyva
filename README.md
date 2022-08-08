@@ -35,6 +35,8 @@ Before you start, please make sure that you've installed the following plugins i
 
 In order to display the payment summary for partial payments using giftcards, you'll need copy (override) all the files & folders from: `Hyva/CheckoutExample/reactapp/src/paymentMethods/buckaroo/src/lib/overrides` to `Hyva/CheckoutExample/reactapp/src`
 
+Our implementation of the module uses the external dependancy `lodash` , so make sure this is also installed in your project, by running the command `npm i lodash`.
+
 ### Upgrading
 
 To update the plugin you just need to use git to fetch the latest changes from github, after that you build the react app again using npm
