@@ -26,17 +26,16 @@ export default function getLineItems(cart) {
     });
   }
 
-  let fromatedDiscounts = [];
+  let formatedDiscounts = [];
   if (hasDiscounts) {
-    fromatedDiscounts = discounts.map((discount) => {
-      const { label, price } = discount;
+    formatedDiscounts = discounts.map((discount) => {
+      const { label, amount } = discount;
       return {
         label: __(label),
-        amount: price,
+        amount,
         type: 'final',
       };
     });
   }
-
-  return [...items, ...fromatedDiscounts];
+  return [...items, ...formatedDiscounts];
 }

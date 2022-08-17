@@ -97,7 +97,6 @@ function Afterpay({ method, selected, actions }) {
         customer_DoB: formikValues.dob,
         termsCondition: formikValues.tos,
         customer_coc: formikValues.coc,
-        customer_gender: '1',
         customer_billingName: cart.billing_address.fullName,
       });
       return onSubmit(values);

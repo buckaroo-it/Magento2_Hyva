@@ -6,6 +6,7 @@ export default function useUpdatePartialPaymentList(
     remainder_amount: remainderAmount,
     already_paid: alreadyPaid,
     transaction,
+    available_payment_methods: availablePaymentMethods,
   } = paymentResponse;
 
   let partialPayment = {
@@ -21,8 +22,16 @@ export default function useUpdatePartialPaymentList(
     };
   }
 
+  const formatedPaymentMethods = {};
+  availablePaymentMethods.forEach((method) => {
+    formatedPaymentMethods[method.code] = method;
+  });
+
   setCartInfo({
     ...cart,
+    available_payment_methods: {
+      ...formatedPaymentMethods,
+    },
     partial_payment: partialPayment,
   });
 }
