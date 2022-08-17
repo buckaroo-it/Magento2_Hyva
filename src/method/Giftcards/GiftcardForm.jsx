@@ -8,9 +8,9 @@ import useAppContext from '@hyva/react-checkout/hook/useAppContext';
 import usePaymentMethodAppContext from '@hyva/react-checkout/components/paymentMethod/hooks/usePaymentMethodAppContext';
 import { formatPrice } from '@hyva/react-checkout/utils/price';
 
-import restAddPartialPaymentTransaction from '../../lib/api/restAddPartialPaymentTransaction/restAddPartialPaymentTransaction';
 import useUpdatePartialPaymentList from '../../lib/helpers/PartialPayments/UpdatePartialPaymentList';
 import TextInput from '../../lib/helpers/components/TextInput';
+import createGiftcardTransaction from '../../lib/hooks/giftcard/createGiftcardTransaction';
 
 function GiftcardForm({ giftcardCode }) {
   const { appDispatch } = useAppContext();
@@ -31,7 +31,7 @@ function GiftcardForm({ giftcardCode }) {
     validationSchema,
     onSubmit: async (values, { resetForm }) => {
       setPageLoader(true);
-      const response = await restAddPartialPaymentTransaction(
+      const response = await createGiftcardTransaction(
         appDispatch,
         giftcardCode,
         values
