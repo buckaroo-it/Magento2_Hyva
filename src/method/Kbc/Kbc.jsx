@@ -15,7 +15,7 @@ function Kbc({ method, selected, actions }) {
   const isSelected = method.code === selected.code;
 
   const invoiceRadioInput = (
-    <div className="title flex">
+    <div className="flex title">
       <RadioInput
         value={method.code}
         name="paymentMethod"
@@ -24,7 +24,7 @@ function Kbc({ method, selected, actions }) {
       />
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label
-        className="text w-full cursor-pointer"
+        className="w-full cursor-pointer text"
         htmlFor={`paymentMethod_${method.code}`}
       >
         <strong>{method.title}</strong>
@@ -45,7 +45,7 @@ function Kbc({ method, selected, actions }) {
 
   useEffect(() => {
     registerPaymentAction(method.code, placeOrder);
-  }, [method, registerPaymentAction]);
+  }, [method, placeOrder, registerPaymentAction]);
 
   if (!isSelected) {
     return invoiceRadioInput;

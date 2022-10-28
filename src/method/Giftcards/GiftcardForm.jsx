@@ -3,19 +3,19 @@ import { string } from 'prop-types';
 import { useFormik } from 'formik';
 import { object as YupObject, string as YupString } from 'yup';
 import { __ } from '@hyva/react-checkout/i18n';
-import useCartContext from '@hyva/react-checkout/hook/useCartContext';
+// import useCartContext from '@hyva/react-checkout/hook/useCartContext';
 import useAppContext from '@hyva/react-checkout/hook/useAppContext';
 import usePaymentMethodAppContext from '@hyva/react-checkout/components/paymentMethod/hooks/usePaymentMethodAppContext';
 import { formatPrice } from '@hyva/react-checkout/utils/price';
 
-import useUpdatePartialPaymentList from '../../lib/helpers/PartialPayments/UpdatePartialPaymentList';
+// import useUpdatePartialPaymentList from '../../lib/helpers/PartialPayments/UpdatePartialPaymentList';
 import TextInput from '../../lib/helpers/components/TextInput';
 import createGiftcardTransaction from '../../lib/hooks/giftcard/createGiftcardTransaction';
 
 function GiftcardForm({ giftcardCode }) {
   const { appDispatch } = useAppContext();
   const { setPageLoader, setSuccessMessage } = usePaymentMethodAppContext();
-  const cartContext = useCartContext();
+  // const cartContext = useCartContext();
   const requiredMessage = __('This is a required field.');
 
   const validationSchema = YupObject({
@@ -37,7 +37,10 @@ function GiftcardForm({ giftcardCode }) {
         values
       ).catch(() => setPageLoader(false));
       setPageLoader(false);
-      useUpdatePartialPaymentList(cartContext, response);
+      /**
+       * @todo a hook should not be called like this. it should be at the top level.
+       */
+      // useUpdatePartialPaymentList(cartContext, response);
       resetForm();
 
       if (response.remainder_amount !== 0) {
@@ -71,7 +74,7 @@ function GiftcardForm({ giftcardCode }) {
         formik={formik}
       />
 
-      <div className="field my-2">
+      <div className="my-2 field">
         <button
           className="btn btn-cta"
           type="button"

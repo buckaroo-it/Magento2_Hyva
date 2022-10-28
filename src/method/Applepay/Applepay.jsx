@@ -19,7 +19,7 @@ function Applepay({ method, selected, actions }) {
   const isSelected = method.code === selected.code;
 
   const invoiceRadioInput = (
-    <div className="title flex">
+    <div className="flex title">
       <RadioInput
         value={method.code}
         name="paymentMethod"
@@ -28,7 +28,7 @@ function Applepay({ method, selected, actions }) {
       />
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label
-        className="text w-full cursor-pointer"
+        className="w-full cursor-pointer text"
         htmlFor={`paymentMethod_${method.code}`}
       >
         <strong>{method.title}</strong>
@@ -48,7 +48,7 @@ function Applepay({ method, selected, actions }) {
       setCanPay(await ApplePay.checkPaySupport(config.guid));
     };
     canPayFunction();
-  }, []);
+  }, [config.guid]);
 
   useEffect(() => {
     if (canPay && isSelected) {
@@ -70,7 +70,7 @@ function Applepay({ method, selected, actions }) {
       );
       ApplePay.PayPayment(options);
     }
-  }, [canPay, config, cart, isSelected]);
+  }, [canPay, config, cart, isSelected, captureFunds]);
   const { registerPaymentAction } = useCheckoutFormContext();
   const { setErrorMessage } = useAppContext();
 
@@ -78,7 +78,7 @@ function Applepay({ method, selected, actions }) {
     setErrorMessage(__('Please use the apple pay button for payment'));
     scrollToElement(selected.code);
     return {};
-  }, [setErrorMessage]);
+  }, [selected.code, setErrorMessage]);
 
   useEffect(() => {
     registerPaymentAction(method.code, placeOrderWithApplepay);

@@ -22,7 +22,7 @@ function Creditcard({ method, selected, actions }) {
   const isSelected = method.code === selected.code;
 
   const invoiceRadioInput = (
-    <div className="title flex">
+    <div className="flex title">
       <RadioInput
         value={method.code}
         name="paymentMethod"
@@ -31,7 +31,7 @@ function Creditcard({ method, selected, actions }) {
       />
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label
-        className="text w-full cursor-pointer"
+        className="w-full cursor-pointer text"
         htmlFor={`paymentMethod_${method.code}`}
       >
         <strong>{method.title}</strong>
@@ -84,7 +84,14 @@ function Creditcard({ method, selected, actions }) {
 
       return onSubmit(values);
     },
-    [onSubmit, setErrorMessage, cardType]
+    [
+      cardType,
+      onSubmit,
+      submitForm,
+      validateForm,
+      selected.code,
+      setErrorMessage,
+    ]
   );
 
   useEffect(() => {

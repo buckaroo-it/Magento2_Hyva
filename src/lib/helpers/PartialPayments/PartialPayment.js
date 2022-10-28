@@ -23,7 +23,7 @@ function usePartialPayment() {
       });
     };
     renderPartial();
-  }, []);
+  }, [appDispatch, cart, setCartInfo]);
 
   return null;
 }

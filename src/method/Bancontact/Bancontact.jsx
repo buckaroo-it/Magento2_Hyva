@@ -23,7 +23,7 @@ function Bancontact({ method, selected, actions }) {
   const isSelected = method.code === selected.code;
 
   const invoiceRadioInput = (
-    <div className="title flex">
+    <div className="flex title">
       <RadioInput
         value={method.code}
         name="paymentMethod"
@@ -32,7 +32,7 @@ function Bancontact({ method, selected, actions }) {
       />
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label
-        className="text w-full cursor-pointer"
+        className="w-full cursor-pointer text"
         htmlFor={`paymentMethod_${method.code}`}
       >
         <strong>{method.title}</strong>
@@ -79,7 +79,15 @@ function Bancontact({ method, selected, actions }) {
       });
       return onSubmit(values);
     },
-    [onSubmit, setErrorMessage, clientSideMode, formikValues]
+    [
+      onSubmit,
+      submitForm,
+      formikValues,
+      validateForm,
+      selected.code,
+      clientSideMode,
+      setErrorMessage,
+    ]
   );
 
   useEffect(() => {

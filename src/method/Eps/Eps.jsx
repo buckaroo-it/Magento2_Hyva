@@ -15,7 +15,7 @@ function Eps({ method, selected, actions }) {
   const isSelected = method.code === selected.code;
 
   const invoiceRadioInput = (
-    <div className="title flex">
+    <div className="flex title">
       <RadioInput
         value={method.code}
         name="paymentMethod"
@@ -24,7 +24,7 @@ function Eps({ method, selected, actions }) {
       />
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label
-        className="text w-full cursor-pointer"
+        className="w-full cursor-pointer text"
         htmlFor={`paymentMethod_${method.code}`}
       >
         <strong>{method.title}</strong>
@@ -45,7 +45,7 @@ function Eps({ method, selected, actions }) {
 
   useEffect(() => {
     registerPaymentAction(method.code, placeOrder);
-  }, [method, registerPaymentAction]);
+  }, [method, placeOrder, registerPaymentAction]);
 
   if (!isSelected) {
     return invoiceRadioInput;
@@ -54,7 +54,7 @@ function Eps({ method, selected, actions }) {
   return (
     <div id={selected.code}>
       {invoiceRadioInput}
-      <div className="content py-2 pl-6">
+      <div className="py-2 pl-6 content">
         <p>{__("You'll be redirected to finish the payment.")}</p>
 
         <PlaceOrder />

@@ -16,7 +16,7 @@ import { ADDITIONAL_DATA_KEY } from '../../lib/helpers/AdditionalBuckarooDataKey
 import logo from '../../../assets/Giftcards.svg';
 import { getConfig } from '../../../config';
 import GiftcardItem from './GiftcardItem';
-import usePartialPayment from '../../lib/helpers/PartialPayments/PartialPayment';
+// import usePartialPayment from '../../lib/helpers/PartialPayments/PartialPayment';
 import onlyBuckaroo from '../../lib/helpers/PartialPayments/OnlyBuckarooPayments';
 import usePlaceBuckarooOrder from '../../lib/helpers/PartialPayments/PlaceOrder';
 
@@ -26,10 +26,13 @@ function Giftcards({ method, selected, actions }) {
   const showAsList = getConfig('groupGiftcards') === '0';
 
   if (showAsList) {
-    usePartialPayment();
+    /**
+     * @todo a hook should not be called like this. it should be at the top level.
+     */
+    // usePartialPayment();
   }
   const invoiceRadioInput = (
-    <div className="title flex">
+    <div className="flex title">
       <RadioInput
         value={method.code}
         label={method.title}
@@ -69,7 +72,7 @@ function Giftcards({ method, selected, actions }) {
       });
       return onSubmit(values);
     },
-    [onSubmit, setErrorMessage, canPlaceOrder]
+    [showAsList, canPlaceOrder, giftcardCode, onSubmit, setErrorMessage]
   );
 
   useEffect(() => {
@@ -84,7 +87,7 @@ function Giftcards({ method, selected, actions }) {
     if (canPlaceOrder && isSelected) {
       placeOrder();
     }
-  }, [canPlaceOrder, isSelected]);
+  }, [canPlaceOrder, isSelected, placeOrder]);
 
   const giftcardCodeChange = async (selectedGiftcardCode) => {
     const methodSelected = _get(methodList, `${method.code}.code`);
@@ -111,7 +114,7 @@ function Giftcards({ method, selected, actions }) {
         },
       });
     }
-  }, [cart.partial_payment, isSelected]);
+  }, [cart, cart.partial_payment, isSelected, setCartInfo]);
 
   useEffect(() => {
     registerPaymentAction(method.code, placeOrderWithGiftcards);

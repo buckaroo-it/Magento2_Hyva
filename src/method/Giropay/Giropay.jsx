@@ -20,7 +20,7 @@ function Giropay({ method, selected, actions }) {
   const isSelected = method.code === selected.code;
 
   const invoiceRadioInput = (
-    <div className="title flex">
+    <div className="flex title">
       <RadioInput
         value={method.code}
         name="paymentMethod"
@@ -29,7 +29,7 @@ function Giropay({ method, selected, actions }) {
       />
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label
-        className="text w-full cursor-pointer"
+        className="w-full cursor-pointer text"
         htmlFor={`paymentMethod_${method.code}`}
       >
         <strong>{method.title}</strong>
@@ -77,7 +77,7 @@ function Giropay({ method, selected, actions }) {
 
       return onSubmit(values);
     },
-    [onSubmit, setErrorMessage, bic]
+    [validateForm, submitForm, bic, onSubmit, setErrorMessage, selected.code]
   );
 
   useEffect(() => {

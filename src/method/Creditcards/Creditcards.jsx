@@ -25,7 +25,7 @@ function Creditcards({ method, selected, actions }) {
   const isSelected = method.code === selected.code;
 
   const invoiceRadioInput = (
-    <div className="title flex">
+    <div className="flex title">
       <RadioInput
         value={method.code}
         name="paymentMethod"
@@ -34,7 +34,7 @@ function Creditcards({ method, selected, actions }) {
       />
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label
-        className="text w-full cursor-pointer"
+        className="w-full cursor-pointer text"
         htmlFor={`paymentMethod_${method.code}`}
       >
         <strong>{method.title}</strong>
@@ -109,7 +109,14 @@ function Creditcards({ method, selected, actions }) {
       });
       return onSubmit(values);
     },
-    [onSubmit, setErrorMessage, formikValues]
+    [
+      onSubmit,
+      submitForm,
+      validateForm,
+      formikValues,
+      selected.code,
+      setErrorMessage,
+    ]
   );
 
   useEffect(() => {
@@ -129,7 +136,7 @@ function Creditcards({ method, selected, actions }) {
   return (
     <div id={selected.code}>
       {invoiceRadioInput}
-      <div className="content py-2 pl-6">
+      <div className="py-2 pl-6 content">
         <div className="form-control">
           <SelectInput
             className="w-full"
@@ -145,7 +152,7 @@ function Creditcards({ method, selected, actions }) {
             label={__('Cardholder')}
             formik={formik}
           />
-          <div className="form-control w-1/2 inline-block pr-1">
+          <div className="inline-block w-1/2 pr-1 form-control">
             <TextInput
               className="w-full"
               name="cardnumber"
@@ -154,7 +161,7 @@ function Creditcards({ method, selected, actions }) {
               formik={formik}
             />
           </div>
-          <div className="form-control w-1/2 inline-block pl-1">
+          <div className="inline-block w-1/2 pl-1 form-control">
             <TextInput
               className="w-full"
               name="cvc"
@@ -163,7 +170,7 @@ function Creditcards({ method, selected, actions }) {
               formik={formik}
             />
           </div>
-          <div className="form-control w-1/2 inline-block pr-1">
+          <div className="inline-block w-1/2 pr-1 form-control">
             <SelectInput
               name="expirationmonth"
               label={__('Month')}
@@ -172,7 +179,7 @@ function Creditcards({ method, selected, actions }) {
               options={range(12, 1)}
             />
           </div>
-          <div className="form-control w-1/2 inline-block pl-1">
+          <div className="inline-block w-1/2 pl-1 form-control">
             <SelectInput
               name="expirationyear"
               label={__('Year')}

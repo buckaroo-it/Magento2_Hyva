@@ -1,31 +1,30 @@
 import React, { useEffect, useCallback } from 'react';
+import { useFormik } from 'formik';
 import { object } from 'prop-types';
 import { set as _set } from 'lodash-es';
-
-import { useFormik } from 'formik';
 import { object as YupObject, string as YupString, bool as YupBool } from 'yup';
 
+import { __ } from '@hyva/react-checkout/i18n';
+import { scrollToElement } from '@hyva/react-checkout/utils/form';
+import useAppContext from '@hyva/react-checkout/hook/useAppContext';
+import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
+import useCartContext from '@hyva/react-checkout/hook/useCartContext';
 import RadioInput from '@hyva/react-checkout/components/common/Form/RadioInput';
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
-import useAppContext from '@hyva/react-checkout/hook/useAppContext';
-import { scrollToElement } from '@hyva/react-checkout/utils/form';
-import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
-import { __ } from '@hyva/react-checkout/i18n';
-import useCartContext from '@hyva/react-checkout/hook/useCartContext';
 
-import useOnSubmit from '../../lib/hooks/useOnSubmit';
-import logo from '../../../assets/AfterPay.svg';
-import { getConfig } from '../../../config';
-import { ADDITIONAL_DATA_KEY } from '../../lib/helpers/AdditionalBuckarooDataKey';
 import TextInput from '../../lib/helpers/components/TextInput';
 import CheckboxInput from '../../lib/helpers/components/CheckboxInput';
+import { getConfig } from '../../../config';
+import logo from '../../../assets/AfterPay.svg';
 import { determineTosLink, showCOC } from './helper';
+import useOnSubmit from '../../lib/hooks/useOnSubmit';
+import { ADDITIONAL_DATA_KEY } from '../../lib/helpers/AdditionalBuckarooDataKey';
 
 function Afterpay({ method, selected, actions }) {
   const isSelected = method.code === selected.code;
 
   const invoiceRadioInput = (
-    <div className="title flex">
+    <div className="flex title">
       <RadioInput
         value={method.code}
         name="paymentMethod"
@@ -34,7 +33,7 @@ function Afterpay({ method, selected, actions }) {
       />
       {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
       <label
-        className="text w-full cursor-pointer"
+        className="w-full cursor-pointer text"
         htmlFor={`paymentMethod_${method.code}`}
       >
         <strong>{method.title}</strong>
@@ -101,7 +100,19 @@ function Afterpay({ method, selected, actions }) {
       });
       return onSubmit(values);
     },
-    [onSubmit, setErrorMessage, formikValues]
+    [
+      onSubmit,
+      submitForm,
+      validateForm,
+      selected.code,
+      setErrorMessage,
+      formikValues.dob,
+      formikValues.tos,
+      formikValues.coc,
+      formikValues.telephone,
+      cart.billing_address.fullName,
+      formikValues.identificationNumber,
+    ]
   );
 
   useEffect(() => {
@@ -115,7 +126,7 @@ function Afterpay({ method, selected, actions }) {
   return (
     <div id={selected.code}>
       {invoiceRadioInput}
-      <div className="content py-2 pl-6">
+      <div className="py-2 pl-6 content">
         <div className="form-control">
           <TextInput
             className="w-full"
