@@ -1,27 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { string } from 'prop-types';
 import { useFormik } from 'formik';
-import { object as YupObject, string as YupString } from 'yup';
 import { __ } from '@hyva/react-checkout/i18n';
-import useCartContext from '@hyva/react-checkout/hook/useCartContext';
-import useAppContext from '@hyva/react-checkout/hook/useAppContext';
-import usePaymentMethodAppContext from '@hyva/react-checkout/components/paymentMethod/hooks/usePaymentMethodAppContext';
-import { formatPrice } from '@hyva/react-checkout/utils/price';
 
-import useUpdatePartialPaymentList from '../../lib/helpers/PartialPayments/UpdatePartialPaymentList';
 import TextInput from '../../lib/helpers/components/TextInput';
-import createGiftcardTransaction from '../../lib/hooks/giftcard/createGiftcardTransaction';
+import { validationSchema } from './helpers';
+import { useOnGiftcardSubmit } from './hooks';
+import paymentEvent from './helpers/partialPayment';
 
 function GiftcardForm({ giftcardCode }) {
-  const { appDispatch } = useAppContext();
-  const { setPageLoader, setSuccessMessage } = usePaymentMethodAppContext();
-  const cartContext = useCartContext();
-  const requiredMessage = __('This is a required field.');
+  const [paymentData, setPaymentData] = useState();
+  const onSubmit = useOnGiftcardSubmit(
+    giftcardCode,
+    paymentData,
+    paymentEvent.emit
+  );
 
-  const validationSchema = YupObject({
-    cardnumber: YupString().required(requiredMessage),
-    pin: YupString().required(requiredMessage),
-  });
+  useEffect(() => {
+    const subscription = (data) => {
+      setPaymentData(data);
+    };
+    paymentEvent.subscribe(subscription);
+    return () => paymentEvent.unsubscribe(subscription);
+  }, []);
 
   const formik = useFormik({
     initialValues: {
@@ -29,29 +30,7 @@ function GiftcardForm({ giftcardCode }) {
       pin: '',
     },
     validationSchema,
-    onSubmit: async (values, { resetForm }) => {
-      setPageLoader(true);
-      const response = await createGiftcardTransaction(
-        appDispatch,
-        giftcardCode,
-        values
-      ).catch(() => setPageLoader(false));
-      setPageLoader(false);
-      useUpdatePartialPaymentList(cartContext, response);
-      resetForm();
-
-      if (response.remainder_amount !== 0) {
-        setSuccessMessage(
-          __(
-            `A partial payment of ${formatPrice(
-              response.transaction.amount
-            )} was successfully performed on a requested amount. Remainder amount ${formatPrice(
-              response.remainder_amount
-            )}`
-          )
-        );
-      }
-    },
+    onSubmit,
   });
 
   return (

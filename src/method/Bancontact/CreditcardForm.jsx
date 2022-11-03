@@ -4,13 +4,9 @@ import { object } from 'prop-types';
 
 import TextInput from '../../lib/helpers/components/TextInput';
 import SelectInput from '../../lib/helpers/components/SelectInput';
+import { yearStart, range } from './helpers';
 
 function CreditcardForm({ formik }) {
-  const yearStart = new Date().getFullYear();
-
-  const range = (size, startAt = 0) =>
-    [...Array(size).keys()].map((i) => i + startAt);
-
   return (
     <div>
       <div className="content p-2">

@@ -5,7 +5,7 @@ import {
 } from 'yup';
 import { __ } from '@hyva/react-checkout/i18n';
 
-import BuckarooClientSideEncryption from '../../../assets/lib/ClientSideEncryption001';
+import BuckarooClientSideEncryption from '../../../../assets/lib/ClientSideEncryption001';
 
 YupAddMethod(YupString, 'bkValidateCardholderName', function (errorMessage) {
   return this.test(

@@ -8,7 +8,7 @@ import {
   number,
   node,
 } from 'prop-types';
-import isObject from '../IsObject';
+import isObject from '../isObject';
 
 function SelectInput({
   name,

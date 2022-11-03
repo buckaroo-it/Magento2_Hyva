@@ -1,6 +1,16 @@
-import { string as YupString, addMethod as YupAddMethod } from 'yup';
+import {
+  string as YupString,
+  addMethod as YupAddMethod,
+  object as YupObject,
+  bool as YupBool,
+} from 'yup';
 
-const calculateAge = function (specifiedDate) {
+import { __ } from '@hyva/react-checkout/i18n';
+import { getConfig } from '../../../config';
+
+const config = getConfig('afterpay20') || {};
+
+const calculateAge = (specifiedDate) => {
   if (specifiedDate && specifiedDate.length > 0) {
     const birthday = +new Date(
       specifiedDate.substr(0, 4),
@@ -57,9 +67,9 @@ export function determineTosLink(country) {
   return `https://documents.myafterpay.com/consumer-terms-conditions/${tosCountry}/`;
 }
 
-export function showCOC(isB2B, cart) {
+export function showCOC(cart) {
   return (
-    isB2B === true &&
+    config?.is_b2b === true &&
     ((cart.shipping_address &&
       cart.shipping_address.country === 'NL' &&
       cart.shipping_address.company &&
@@ -69,4 +79,25 @@ export function showCOC(isB2B, cart) {
         cart.billing_address.company &&
         cart.billing_address.company.trim().length > 0))
   );
+}
+
+export function prepareValidationSchema(cart) {
+  const requiredMessage = __('This is a required field.');
+  return YupObject({
+    telephone: YupString().required(requiredMessage),
+    dob: YupString()
+      .required(requiredMessage)
+      .bkIs18years(__('You should be at least 18 years old.')),
+    tos: YupBool().oneOf([true], requiredMessage),
+    identificationNumber: YupString().when('isCompany', {
+      is: () => cart.billing_address.country === 'FI',
+      then: YupString().required(requiredMessage),
+      otherwise: YupString(),
+    }),
+    coc: YupString().when('isb2b', {
+      is: () => showCOC(cart),
+      then: YupString().required(requiredMessage),
+      otherwise: YupString(),
+    }),
+  });
 }

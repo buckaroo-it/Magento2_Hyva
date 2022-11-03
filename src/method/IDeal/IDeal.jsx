@@ -1,53 +1,20 @@
-import React, { useEffect, useCallback } from 'react';
+import React, { useEffect } from 'react';
 import { object } from 'prop-types';
-import { set as _set } from 'lodash-es';
-
+import { __ } from '@hyva/react-checkout/i18n';
 import { useFormik } from 'formik';
 
-import RadioInput from '@hyva/react-checkout/components/common/Form/RadioInput';
 import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
-import useAppContext from '@hyva/react-checkout/hook/useAppContext';
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
-import { scrollToElement } from '@hyva/react-checkout/utils/form';
 
-import { __ } from '@hyva/react-checkout/i18n';
-import { getConfig } from '../../../config';
-import logo from '../../../assets/Ideal.svg';
-import { ADDITIONAL_DATA_KEY } from '../../lib/helpers/AdditionalBuckarooDataKey';
-import { validationSchema } from './Validators';
+import PaymentMethodRadio from '../../lib/helpers/components/PaymentMethodRadio';
 import SelectInput from '../../lib/helpers/components/SelectInput';
-import useOnSubmit from '../../lib/hooks/useOnSubmit';
+import usePlaceOrder from './usePlaceOrder';
+import { getIssuers, validationSchema } from './helpers';
 
 function IDeal({ method, selected, actions }) {
   const isSelected = method.code === selected.code;
 
-  const invoiceRadioInput = (
-    <div className="title flex">
-      <RadioInput
-        value={method.code}
-        name="paymentMethod"
-        checked={isSelected}
-        onChange={actions.change}
-      />
-      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-      <label
-        className="text w-full cursor-pointer"
-        htmlFor={`paymentMethod_${method.code}`}
-      >
-        <strong>{method.title}</strong>
-        <div className="cta">{__('Most often chosen')}</div>
-        <div className="description">{__('Pay with online banking')}</div>
-      </label>
-
-      <img height="24" width="24" src={logo} alt="Ideal Logo" />
-    </div>
-  );
-
   const { registerPaymentAction } = useCheckoutFormContext();
-  const { setErrorMessage } = useAppContext();
-  const onSubmit = useOnSubmit();
-
-  const { banks: paymentMethods } = getConfig('ideal');
 
   const formik = useFormik({
     initialValues: {
@@ -56,63 +23,38 @@ function IDeal({ method, selected, actions }) {
     validationSchema,
   });
 
-  const {
-    validateForm,
-    submitForm,
-    values: { issuer },
-  } = formik;
-
-  const palaceOrderWithIdeal = useCallback(
-    async (values) => {
-      const errors = await validateForm();
-      submitForm();
-      if (Object.keys(errors).length) {
-        setErrorMessage(__('One or more fields are required'));
-        scrollToElement(selected.code);
-        return {};
-      }
-      _set(values, ADDITIONAL_DATA_KEY, {
-        issuer,
-      });
-      return onSubmit(values);
-    },
-    [onSubmit, setErrorMessage, issuer]
-  );
-
+  const palaceOrderWithIdeal = usePlaceOrder(selected.code, formik);
   useEffect(() => {
     registerPaymentAction(method.code, palaceOrderWithIdeal);
-  }, [method, registerPaymentAction, palaceOrderWithIdeal]);
+  }, [method.code, registerPaymentAction, palaceOrderWithIdeal]);
 
-  if (!isSelected) {
-    return invoiceRadioInput;
-  }
-
-  const mapIssuer = (origIssuer) => ({
-    name: origIssuer.name,
-    value: origIssuer.code,
-  });
-  const formatedIssuers = paymentMethods.map(mapIssuer);
   return (
     <>
-      {invoiceRadioInput}
-      <div className="content py-2 pl-6">
-        <SelectInput
-          name="issuer"
-          label={__('Bank')}
-          formik={formik}
-          prependOption={
-            <option disabled value="">
-              {__('Select a bank')}
-            </option>
-          }
-          options={formatedIssuers}
-        />
-        <p className="mt-2">
-          {__("You'll be redirected to finish the payment.")}
-        </p>
+      <PaymentMethodRadio
+        method={method}
+        isSelected={isSelected}
+        onChange={actions.change}
+      />
+      {isSelected && (
+        <div className="content py-2 pl-6">
+          <SelectInput
+            name="issuer"
+            label={__('Bank')}
+            formik={formik}
+            prependOption={
+              <option disabled value="">
+                {__('Select a bank')}
+              </option>
+            }
+            options={getIssuers()}
+          />
+          <p className="mt-2">
+            {__("You'll be redirected to finish the payment.")}
+          </p>
 
-        <PlaceOrder />
-      </div>
+          <PlaceOrder />
+        </div>
+      )}
     </>
   );
 }

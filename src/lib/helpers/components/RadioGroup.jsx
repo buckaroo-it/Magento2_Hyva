@@ -1,6 +1,6 @@
 import React from 'react';
 import { string, object, oneOfType, shape, arrayOf, number } from 'prop-types';
-import isObject from '../IsObject';
+import isObject from '../isObject';
 
 function RadioGroup({
   name,

@@ -21,6 +21,14 @@ export default async function createGiftcardTransaction(
     await sendRequest(dispatch, {
       query: `
     mutation buckarooProcessGiftcardTransactionMutation($cart_id: String!, $card_number: String!, $card_pin:String!, $giftcard_id:String!) {
+      setPaymentMethodOnCart(
+        input: {
+          cart_id: $cart_id
+          payment_method: {
+            code: "buckaroo_magento2_giftcards"
+          }
+        }
+      ) { cart { email } }
       buckarooProcessGiftcardTransaction(
         input: {
           cart_id: $cart_id,
