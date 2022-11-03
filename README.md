@@ -49,7 +49,7 @@ To update the plugin you just need to use git to fetch the latest changes from g
 
 ### Internationalization
 
-A json file with the translation strings can be found in the `i18n` folder, you can use this file to add translation to the Hyvä module using the default internationalization functionality provided by Hyvä - [ Internationalization Docks](https://hyva-themes.github.io/magento2-react-checkout/i18n/)
+A csv file with the translation strings can be found in the `i18n` folder, you can use this file to add translation to the Hyvä module using the default internationalization functionality provided by Hyvä - [ Internationalization Docks](https://hyva-themes.github.io/magento2-react-checkout/i18n/)
 
 ---
 ### Supported Payment Methods
