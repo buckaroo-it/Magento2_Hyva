@@ -23,7 +23,7 @@ function PaymentMethodRadio({ method, isSelected, onChange }) {
         <strong>{title}</strong>
       </label>
 
-      <img v-if={logo} height="24" width="24" src={logo} alt={title} />
+      {logo && <img height="24" width="24" src={logo} alt={title} />}
     </div>
   );
 }
