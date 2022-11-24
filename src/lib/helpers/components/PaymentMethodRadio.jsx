@@ -8,21 +8,14 @@ function PaymentMethodRadio({ method, isSelected, onChange }) {
   const logo = getLogo(methodCode);
 
   return (
-    <div className="title flex">
+    <div className="title flex justify-between">
       <RadioInput
         value={methodCode}
         name="paymentMethod"
+        label={title}
         checked={isSelected}
         onChange={onChange}
       />
-      {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-      <label
-        className="text w-full cursor-pointer"
-        htmlFor={`paymentMethod_${methodCode}`}
-      >
-        <strong>{title}</strong>
-      </label>
-
       {logo && <img height="24" width="24" src={logo} alt={title} />}
     </div>
   );
