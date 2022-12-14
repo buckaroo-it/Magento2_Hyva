@@ -3,7 +3,6 @@ import { func, shape, object } from 'prop-types';
 import { __ } from '@hyva/react-checkout/i18n';
 import { useFormik } from 'formik';
 
-import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
 
 import TextInput from '../../lib/helpers/components/TextInput';
@@ -36,16 +35,13 @@ function Giropay({ method, selected, actions }) {
         onChange={actions.change}
       />
       {isSelected && (
-        <>
-          <TextInput
-            className="w-full"
-            name="bic"
-            type="text"
-            label={__('BIC:')}
-            formik={formik}
-          />
-          <PlaceOrder />
-        </>
+        <TextInput
+          className="w-full"
+          name="bic"
+          type="text"
+          label={__('BIC:')}
+          formik={formik}
+        />
       )}
     </>
   );

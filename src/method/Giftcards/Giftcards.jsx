@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { func, shape, object } from 'prop-types';
 
-import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
 
 import PaymentMethodRadio from '../../lib/helpers/components/PaymentMethodRadio';
@@ -50,7 +49,6 @@ function Giftcards({ method, selected, actions }) {
         isSelected={isSelected}
         onChange={actions.change}
       />
-      {isSelected && <PlaceOrder />}
     </div>
   );
 }

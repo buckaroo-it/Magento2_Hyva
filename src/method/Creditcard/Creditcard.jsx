@@ -3,7 +3,6 @@ import { func, shape, object } from 'prop-types';
 import { useFormik } from 'formik';
 
 import { __ } from '@hyva/react-checkout/i18n';
-import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
 
 import PaymentMethodRadio from '../../lib/helpers/components/PaymentMethodRadio';
@@ -61,7 +60,6 @@ function Creditcard({ method, selected, actions }) {
               options={formattedCards}
             />
           ) : null}
-          <PlaceOrder />
         </>
       )}
     </div>

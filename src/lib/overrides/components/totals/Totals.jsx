@@ -9,11 +9,13 @@ import PartialPaymentInfo from '../../paymentMethods/buckaroo/src/method/Partial
 
 function Totals() {
   const {
-    subTotal,
     discounts,
     grandTotal,
     hasSubTotal,
+    subTotalIncl,
+    appliedTaxes,
     hasDiscounts,
+    hasAppliedTaxes,
     hasShippingRate,
     shippingMethodRate,
   } = useTotalsCartContext();
@@ -27,7 +29,7 @@ function Totals() {
               {hasSubTotal && (
                 <div className="flex justify-between">
                   <div>{__('Cart Subtotal')}</div>
-                  <div>{subTotal}</div>
+                  <div>{subTotalIncl}</div>
                 </div>
               )}
 
@@ -37,6 +39,15 @@ function Totals() {
                   <div>{shippingMethodRate}</div>
                 </div>
               )}
+              {hasAppliedTaxes &&
+                appliedTaxes.map((appliedTax) => (
+                  <div key={appliedTax.label} className="flex justify-between">
+                    <div>
+                      {__('Tax')} {__(appliedTax.label)}
+                    </div>
+                    <div>{appliedTax.price}</div>
+                  </div>
+                ))}
               {hasDiscounts &&
                 discounts.map((discount) => (
                   <div key={discount.label} className="flex justify-between">
@@ -45,6 +56,7 @@ function Totals() {
                   </div>
                 ))}
             </div>
+
             <div className="mt-3">
               <div className="flex justify-between text-xl font-bold">
                 <div>{__('Order Total')}</div>

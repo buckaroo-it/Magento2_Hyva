@@ -3,7 +3,6 @@ import { object } from 'prop-types';
 import { __ } from '@hyva/react-checkout/i18n';
 import { useFormik } from 'formik';
 
-import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
 
 import PaymentMethodRadio from '../../lib/helpers/components/PaymentMethodRadio';
@@ -51,8 +50,6 @@ function IDeal({ method, selected, actions }) {
           <p className="mt-2">
             {__("You'll be redirected to finish the payment.")}
           </p>
-
-          <PlaceOrder />
         </div>
       )}
     </>

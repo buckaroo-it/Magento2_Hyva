@@ -5,7 +5,6 @@ import { useFormik } from 'formik';
 
 import RadioInput from '@hyva/react-checkout/components/common/Form/RadioInput';
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
-import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
 import { __ } from '@hyva/react-checkout/i18n';
 
 import PaymentMethodRadio from '../../lib/helpers/components/PaymentMethodRadio';
@@ -41,33 +40,28 @@ function Bancontact({ method, selected, actions }) {
         isSelected={isSelected}
         onChange={actions.change}
       />
-      {isSelected && (
-        <>
-          {useClientSide && (
-            <div className="p-2">
-              <RadioInput
-                value="cc"
-                label={__('Bancontact card')}
-                name="clientSideMode"
-                checked={clientSideMode === 'cc'}
-                onChange={(e) => {
-                  setClientSideMode(e.target.value);
-                }}
-              />
-              <RadioInput
-                value="mobile"
-                label={__('Bancontact QR')}
-                name="clientSideMode"
-                checked={clientSideMode === 'mobile'}
-                onChange={(e) => {
-                  setClientSideMode(e.target.value);
-                }}
-              />
-              {clientSideMode === 'cc' && <CreditcardForm formik={formik} />}
-            </div>
-          )}
-          <PlaceOrder />
-        </>
+      {isSelected && useClientSide && (
+        <div className="p-2">
+          <RadioInput
+            value="cc"
+            label={__('Bancontact card')}
+            name="clientSideMode"
+            checked={clientSideMode === 'cc'}
+            onChange={(e) => {
+              setClientSideMode(e.target.value);
+            }}
+          />
+          <RadioInput
+            value="mobile"
+            label={__('Bancontact QR')}
+            name="clientSideMode"
+            checked={clientSideMode === 'mobile'}
+            onChange={(e) => {
+              setClientSideMode(e.target.value);
+            }}
+          />
+          {clientSideMode === 'cc' && <CreditcardForm formik={formik} />}
+        </div>
       )}
     </div>
   );

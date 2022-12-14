@@ -3,7 +3,6 @@ import { object } from 'prop-types';
 
 import { useFormik } from 'formik';
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
-import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
 import { __ } from '@hyva/react-checkout/i18n';
 import useCartContext from '@hyva/react-checkout/hook/useCartContext';
 
@@ -101,8 +100,6 @@ function Afterpay({ method, selected, actions }) {
                 )
               </>
             ) : null}
-
-            <PlaceOrder />
           </div>
         </div>
       )}

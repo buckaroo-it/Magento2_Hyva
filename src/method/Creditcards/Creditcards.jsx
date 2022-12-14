@@ -4,7 +4,6 @@ import { object } from 'prop-types';
 import { useFormik } from 'formik';
 
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
-import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
 import { __ } from '@hyva/react-checkout/i18n';
 
 import PaymentMethodRadio from '../../lib/helpers/components/PaymentMethodRadio';
@@ -115,8 +114,6 @@ function Creditcards({ method, selected, actions }) {
             <p className="mt-2">
               {__("You'll be redirected to finish the payment.")}
             </p>
-
-            <PlaceOrder />
           </div>
         </div>
       )}

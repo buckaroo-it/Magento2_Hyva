@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { object } from 'prop-types';
 
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
-import PlaceOrder from '@hyva/react-checkout/components/placeOrder';
 import { __ } from '@hyva/react-checkout/i18n';
 
 import PaymentMethodRadio from '../../lib/helpers/components/PaymentMethodRadio';
@@ -28,8 +27,6 @@ function PayPal({ method, selected, actions }) {
       {isSelected && (
         <div className="content py-2 pl-6">
           <p>{__("You'll be redirected to finish the payment.")}</p>
-
-          <PlaceOrder />
         </div>
       )}
     </div>
