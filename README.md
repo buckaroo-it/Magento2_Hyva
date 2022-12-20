@@ -31,7 +31,7 @@ Before you start, please make sure that you've installed the following plugins i
 },
 ```
 
-**Run  `npm i`  again to process the changes.**
+**Run `npm i` again to process the changes and `npm run build` to rebuild the app.**
 
 In order to display the payment summary for partial payments using giftcards, you'll need copy (override) all the files & folders from: `Hyva/CheckoutExample/reactapp/src/paymentMethods/buckaroo/src/lib/overrides` to `Hyva/CheckoutExample/reactapp/src`
 
@@ -47,10 +47,14 @@ To update the plugin you just need to use git to fetch the latest changes from g
 
 `npm run build`
 
+### Internationalization
+
+A csv file with the translation strings can be found in the `i18n` folder, you can use this file to add translation to the Hyvä module using the default internationalization functionality provided by Hyvä - [ Internationalization Docks](https://hyva-themes.github.io/magento2-react-checkout/i18n/)
+
 ---
 ### Supported Payment Methods
 Currently not all payment methods are supported in our Magento 2 Hyvä checkout extension. A list of all supported payment methods can be found below:
-- Apple Pay
+- ApplePay
 - AfterPay
 - Bancontact
 - Creditcards
@@ -61,7 +65,13 @@ Currently not all payment methods are supported in our Magento 2 Hyvä checkout 
 - KBC
 - PayPal
 - SEPA (Bank transfer)
-
+- Payconiq
+- Belfius
+- Sofortbanking
+- Alipay
+- Wechatpay
+- Trustly
+- Rtp
 
 ### Contribute
 We really appreciate it when developers contribute to improve the Buckaroo plugins.

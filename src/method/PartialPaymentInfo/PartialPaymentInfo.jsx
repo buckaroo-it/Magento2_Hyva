@@ -2,23 +2,57 @@ import React, { useEffect, useState } from 'react';
 import useCartContext from '@hyva/react-checkout/hook/useCartContext';
 import { __ } from '@hyva/react-checkout/i18n';
 import { formatPrice } from '@hyva/react-checkout/utils/price';
+import getGiftcardList from '../../lib/hooks/giftcard_list/getGiftcardList';
+
+import paymentEvent from '../Giftcards/helpers/partialPayment';
 
 function PartialPaymentInfo() {
-  const { cart } = useCartContext();
+  const { appDispatch, setCartInfo, cart } = useCartContext();
+  const [paymentData, setPaymentData] = useState();
 
-  const [display, setDisplay] = useState(false);
   useEffect(() => {
-    if (cart.partial_payment && cart.partial_payment.transactions.length) {
-      setDisplay(true);
-    }
-  }, [cart.partial_payment]);
+    const getData = async () => {
+      const data = await getGiftcardList(appDispatch);
+      paymentEvent.emit(data);
+    };
+    getData();
+  }, [appDispatch]);
 
-  if (display) {
+  useEffect(() => {
+    const subscription = (data) => {
+      setPaymentData(data);
+    };
+    paymentEvent.subscribe(subscription);
+    return () => paymentEvent.unsubscribe(subscription);
+  }, []);
+
+  const availablePaymentMethods = paymentData?.available_payment_methods;
+  const cartLoaded = cart.loaded === true;
+  const hasTransactions =
+    paymentData !== undefined && paymentData.transactions.length > 0;
+
+  useEffect(() => {
+    if (availablePaymentMethods && cartLoaded && hasTransactions) {
+      const formatedPaymentMethods = {};
+      availablePaymentMethods.forEach((method) => {
+        formatedPaymentMethods[method.code] = method;
+      });
+
+      setCartInfo({
+        available_payment_methods: {
+          ...formatedPaymentMethods,
+        },
+      });
+    }
+  }, [availablePaymentMethods, setCartInfo, cartLoaded, hasTransactions]);
+
+  if (hasTransactions) {
     const {
       remainder_amount: remainderAmount,
       already_paid: alreadyPaid,
       transactions,
-    } = cart.partial_payment;
+    } = paymentData;
+
     return (
       <>
         {transactions.map((transaction) => {

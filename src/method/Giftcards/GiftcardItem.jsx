@@ -9,32 +9,31 @@ function GiftcardItem({ giftcard, selected, giftcardCodeChange }) {
     giftcardCodeChange(giftcard.code);
   };
 
-  const giftcardRadio = (
-    <div className="title flex">
-      <RadioInput
-        value={giftcard.code}
-        name="paymentMethod"
-        checked={selected}
-        onChange={setSelected}
-      />
-      <label
-        className="text w-full cursor-pointer"
-        htmlFor={`paymentMethod_${giftcard.code}`}
-      >
-        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-        <strong>{giftcard.title}</strong>
-      </label>
-      {giftcard.logo !== false && (
-        <img width="24" height="24" src={giftcard.logo} alt={giftcard.title} />
-      )}
-    </div>
-  );
-  if (!selected) {
-    return <div className="payment-method giftcard">{giftcardRadio}</div>;
-  }
   return (
     <div className="payment-method giftcard">
-      {giftcardRadio}
+      <div className="title flex">
+        <RadioInput
+          value={giftcard.code}
+          name="paymentMethod"
+          checked={selected}
+          onChange={setSelected}
+        />
+        <label
+          className="text w-full cursor-pointer"
+          htmlFor={`paymentMethod_${giftcard.code}`}
+        >
+          {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+          <strong>{giftcard.title}</strong>
+        </label>
+        {giftcard.logo !== false && (
+          <img
+            width="24"
+            height="24"
+            src={giftcard.logo}
+            alt={giftcard.title}
+          />
+        )}
+      </div>
       {selected && <GiftcardForm giftcardCode={giftcard.code} />}
     </div>
   );

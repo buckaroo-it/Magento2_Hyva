@@ -1,4 +1,5 @@
-import { get as _get } from 'lodash-es';
+import { useCallback } from 'react';
+import { get as _get, set } from 'lodash-es';
 import { useFormikContext } from 'formik';
 
 import {
@@ -39,7 +40,7 @@ export default function usePlaceBuckarooOrder() {
   const { setMessage, setErrorMessage, setPageLoader } =
     usePlaceOrderAppContext();
 
-  return async () => {
+  return useCallback(async () => {
     setMessage(false);
 
     if (hasLoginErrors(errors)) {
@@ -54,6 +55,8 @@ export default function usePlaceBuckarooOrder() {
       focusOnFormErrorElement(LOGIN_FORM, errors);
       return;
     }
+
+    set(values, 'fromGiftcard', true);
 
     if (hasShippingAddressErrors(errors)) {
       setErrorMessage(__('Please provide your shipping address information.'));
@@ -96,5 +99,15 @@ export default function usePlaceBuckarooOrder() {
       console.error(error);
       setPageLoader(false);
     }
-  };
+  }, [
+    values,
+    errors,
+    isVirtualCart,
+    saveBillingShippingAddress,
+    saveEmailAddressInfo,
+    setErrorMessage,
+    setMessage,
+    setPageLoader,
+    validateThenPlaceOrder,
+  ]);
 }

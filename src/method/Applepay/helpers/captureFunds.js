@@ -3,7 +3,7 @@ import { set as _set } from 'lodash-es';
 import { useFormikContext } from 'formik';
 
 import useOnSubmit from '../../../lib/hooks/useOnSubmit';
-import { ADDITIONAL_DATA_KEY } from '../../../lib/helpers/AdditionalBuckarooDataKey';
+import { ADDITIONAL_DATA_KEY } from '../../../lib/helpers/additionalBuckarooDataKey';
 
 const formatTransactionResponse = function (response) {
   if (response === null || response === 'undefined') {
