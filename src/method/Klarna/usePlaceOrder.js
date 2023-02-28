@@ -3,28 +3,34 @@ import { set as _set } from 'lodash-es';
 import { __ } from '@hyva/react-checkout/i18n';
 
 import useAppContext from '@hyva/react-checkout/hook/useAppContext';
+import { scrollToElement } from '@hyva/react-checkout/utils/form';
 
 import useOnSubmit from '../../lib/hooks/useOnSubmit';
 import { ADDITIONAL_DATA_KEY } from '../../lib/helpers/additionalBuckarooDataKey';
-import { showAsList } from './helpers';
 
-export function usePlaceOrder(giftcardCode) {
+export default function usePlaceOrder(methodCode, formik) {
+  const {
+    validateForm,
+    submitForm,
+    values: { gender },
+  } = formik;
   const { setErrorMessage } = useAppContext();
   const onSubmit = useOnSubmit();
 
   return useCallback(
     async (values) => {
-      if (showAsList && values?.fromGiftcard !== true) {
+      const errors = await validateForm();
+      submitForm();
+      if (Object.keys(errors).length) {
         setErrorMessage(__('One or more fields are required'));
+        scrollToElement(methodCode);
         return {};
       }
-      if (!showAsList) {
-        _set(values, ADDITIONAL_DATA_KEY, {
-          giftcard_method: giftcardCode,
-        });
-      }
+      _set(values, ADDITIONAL_DATA_KEY, {
+        customer_gender: gender,
+      });
       return onSubmit(values);
     },
-    [onSubmit, setErrorMessage, giftcardCode]
+    [onSubmit, setErrorMessage, gender, methodCode, submitForm, validateForm]
   );
 }

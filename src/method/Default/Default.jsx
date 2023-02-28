@@ -7,7 +7,7 @@ import { __ } from '@hyva/react-checkout/i18n';
 import PaymentMethodRadio from '../../lib/helpers/components/PaymentMethodRadio';
 import usePlaceOrder from './usePlaceOrder';
 
-function PayPal({ method, selected, actions }) {
+function DefaultMethod({ method, selected, actions }) {
   const { registerPaymentAction } = useCheckoutFormContext();
   const placeOrder = usePlaceOrder();
 
@@ -33,9 +33,9 @@ function PayPal({ method, selected, actions }) {
   );
 }
 
-export default PayPal;
+export default DefaultMethod;
 
-PayPal.propTypes = {
+DefaultMethod.propTypes = {
   method: object.isRequired,
   selected: object.isRequired,
   actions: object.isRequired,
