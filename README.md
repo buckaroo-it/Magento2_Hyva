@@ -72,6 +72,14 @@ Currently not all payment methods are supported in our Magento 2 Hyvä checkout 
 - Wechatpay
 - Trustly
 - Rtp
+- AfterpayOld
+- Billink
+- In3
+- Klarna
+- PayPerEmail
+- SepaDirect
+- Tinka
+- Voucher
 
 ### Contribute
 We really appreciate it when developers contribute to improve the Buckaroo plugins.
