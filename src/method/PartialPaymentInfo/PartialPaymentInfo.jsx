@@ -1,57 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import useCartContext from '@hyva/react-checkout/hook/useCartContext';
+import React from 'react';
 import { __ } from '@hyva/react-checkout/i18n';
 import { formatPrice } from '@hyva/react-checkout/utils/price';
-import getGiftcardList from '../../lib/hooks/giftcard_list/getGiftcardList';
-
-import paymentEvent from '../Giftcards/helpers/partialPayment';
+import usePartialPayment from '../../lib/hooks/usePartialPayment';
 
 function PartialPaymentInfo() {
-  const { appDispatch, setCartInfo, cart } = useCartContext();
-  const [paymentData, setPaymentData] = useState();
+  const { cartPartialPayment } = usePartialPayment();
 
-  useEffect(() => {
-    const getData = async () => {
-      const data = await getGiftcardList(appDispatch);
-      paymentEvent.emit(data);
-    };
-    getData();
-  }, [appDispatch]);
-
-  useEffect(() => {
-    const subscription = (data) => {
-      setPaymentData(data);
-    };
-    paymentEvent.subscribe(subscription);
-    return () => paymentEvent.unsubscribe(subscription);
-  }, []);
-
-  const availablePaymentMethods = paymentData?.available_payment_methods;
-  const cartLoaded = cart.loaded === true;
-  const hasTransactions =
-    paymentData !== undefined && paymentData.transactions.length > 0;
-
-  useEffect(() => {
-    if (availablePaymentMethods && cartLoaded && hasTransactions) {
-      const formatedPaymentMethods = {};
-      availablePaymentMethods.forEach((method) => {
-        formatedPaymentMethods[method.code] = method;
-      });
-
-      setCartInfo({
-        available_payment_methods: {
-          ...formatedPaymentMethods,
-        },
-      });
-    }
-  }, [availablePaymentMethods, setCartInfo, cartLoaded, hasTransactions]);
-
-  if (hasTransactions) {
+  if ((cartPartialPayment?.transactions || []).length) {
     const {
       remainder_amount: remainderAmount,
       already_paid: alreadyPaid,
       transactions,
-    } = paymentData;
+    } = cartPartialPayment;
 
     return (
       <>

@@ -8,11 +8,22 @@ import useCartContext from '@hyva/react-checkout/hook/useCartContext';
 
 import TextInput from '../../lib/helpers/components/TextInput';
 import CheckboxInput from '../../lib/helpers/components/CheckboxInput';
-import { determineTosLink, prepareValidationSchema, showCOC } from './helpers';
+import SelectInput from '../../lib/helpers/components/SelectInput';
+
+import {
+  canShowPhone,
+  determineTosLink,
+  getBusinessModels,
+  isAcceptgiro,
+  isDigiAccept,
+  prepareValidationSchema,
+  areBothBusinessMethod,
+  isB2B,
+} from './helpers';
 import PaymentMethodRadio from '../../lib/helpers/components/PaymentMethodRadio';
 import usePlaceOrder from './usePlaceOrder';
 
-function Afterpay({ method, selected, actions }) {
+function AfterpayOld({ method, selected, actions }) {
   const { registerPaymentAction } = useCheckoutFormContext();
   const { cart } = useCartContext();
 
@@ -22,11 +33,13 @@ function Afterpay({ method, selected, actions }) {
     initialValues: {
       telephone: '',
       dob: '',
-      identificationNumber: '',
+      iban: '',
       tos: false,
       coc: '',
+      companyName: '',
+      businessType: 'b2c',
     },
-    validationSchema: prepareValidationSchema(cart),
+    validationSchema: prepareValidationSchema(cart, method.code),
   });
   const placeOrder = usePlaceOrder(selected.code, formik);
 
@@ -44,13 +57,15 @@ function Afterpay({ method, selected, actions }) {
       {isSelected && (
         <div className="content py-2 pl-6">
           <div className="form-control">
-            <TextInput
-              className="w-full"
-              name="telephone"
-              type="text"
-              label={__('Telephone:')}
-              formik={formik}
-            />
+            {canShowPhone(cart) && (
+              <TextInput
+                className="w-full"
+                name="telephone"
+                type="text"
+                label={__('Telephone:')}
+                formik={formik}
+              />
+            )}
             <TextInput
               className="w-full"
               name="dob"
@@ -58,17 +73,39 @@ function Afterpay({ method, selected, actions }) {
               label={__('Date of Birth:')}
               formik={formik}
             />
-            {cart.billing_address.country === 'FI' ? (
-              <TextInput
-                className="w-full"
-                name="identificationNumber"
-                type="text"
-                label={__('Identification number:')}
-                formik={formik}
-              />
-            ) : null}
 
-            {showCOC(cart) ? (
+            {isAcceptgiro(method.code) && (
+              <>
+                {areBothBusinessMethod(method.code) && (
+                  <SelectInput
+                    name="businessType"
+                    label={__('Business Model:')}
+                    formik={formik}
+                    options={getBusinessModels()}
+                  />
+                )}
+                {isB2B(method.code, formik.values.businessType) && (
+                  <>
+                    <TextInput
+                      className="w-full"
+                      name="iban"
+                      type="text"
+                      label={__('Bank Account Number:')}
+                      formik={formik}
+                    />
+                    <TextInput
+                      className="w-full"
+                      name="companyName"
+                      type="text"
+                      label={__('Company Name:')}
+                      formik={formik}
+                    />
+                  </>
+                )}
+              </>
+            )}
+
+            {isDigiAccept(method.code) && (
               <TextInput
                 className="w-full"
                 name="coc"
@@ -76,7 +113,7 @@ function Afterpay({ method, selected, actions }) {
                 label={__('COC-number:')}
                 formik={formik}
               />
-            ) : null}
+            )}
 
             <CheckboxInput
               name="tos"
@@ -107,9 +144,9 @@ function Afterpay({ method, selected, actions }) {
   );
 }
 
-export default Afterpay;
+export default AfterpayOld;
 
-Afterpay.propTypes = {
+AfterpayOld.propTypes = {
   method: object.isRequired,
   selected: object.isRequired,
   actions: object.isRequired,

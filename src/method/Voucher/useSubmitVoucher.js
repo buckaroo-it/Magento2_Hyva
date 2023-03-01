@@ -1,36 +1,34 @@
 import { useCallback } from 'react';
 import { __ } from '@hyva/react-checkout/i18n';
-
-import usePaymentMethodAppContext from '@hyva/react-checkout/components/paymentMethod/hooks/usePaymentMethodAppContext';
-import useAppContext from '@hyva/react-checkout/hook/useAppContext';
 import { formatPrice } from '@hyva/react-checkout/utils/price';
-import createGiftcardTransaction from '../../../lib/hooks/giftcard/createGiftcardTransaction';
-import usePlaceBuckarooOrder from './usePlaceOrder';
-import usePartialPayment from '../../../lib/hooks/usePartialPayment';
-import { useValidateCart } from '../../../lib/hooks/useValidateCart';
+import usePaymentMethodAppContext from '@hyva/react-checkout/components/paymentMethod/hooks/usePaymentMethodAppContext';
 
-export default function useOnGiftcardSubmit(giftcardCode) {
+import useAppContext from '@hyva/react-checkout/hook/useAppContext';
+import submitVoucher from '../../lib/api/voucher/submitVoucher';
+import usePlaceBuckarooOrder from '../Giftcards/hooks/usePlaceOrder';
+import usePartialPayment from '../../lib/hooks/usePartialPayment';
+import { useValidateCart } from '../../lib/hooks/useValidateCart';
+
+export default function useSubmitVoucher() {
+  const { dispatch } = useAppContext();
   const { setPageLoader, setSuccessMessage, setErrorMessage } =
     usePaymentMethodAppContext();
-  const { appDispatch } = useAppContext();
   const placeOrder = usePlaceBuckarooOrder();
+
   const { updatePartialPayment } = usePartialPayment();
+
   const isCartValid = useValidateCart();
   return useCallback(
-    async (values, { resetForm }) => {
+    async ({ voucher }, { resetForm }) => {
       if (!isCartValid()) {
         return;
       }
       setPageLoader(true);
-      const response = await createGiftcardTransaction(
-        appDispatch,
-        giftcardCode,
-        values
-      ).catch(() => setPageLoader(false));
+      const response = await submitVoucher(dispatch, voucher).catch(() =>
+        setPageLoader(false)
+      );
+
       setPageLoader(false);
-
-      resetForm();
-
       if (response?.transaction) {
         updatePartialPayment(response);
         if (response.remainder_amount !== 0) {
@@ -51,13 +49,14 @@ export default function useOnGiftcardSubmit(giftcardCode) {
       } else {
         setErrorMessage('Cannot apply voucher');
       }
+
+      resetForm();
     },
     [
-      appDispatch,
+      dispatch,
       setPageLoader,
       setSuccessMessage,
       setErrorMessage,
-      giftcardCode,
       placeOrder,
       updatePartialPayment,
       isCartValid,

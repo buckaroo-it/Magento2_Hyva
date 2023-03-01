@@ -16,7 +16,7 @@ function PaymentMethodRadio({ method, isSelected, onChange }) {
         checked={isSelected}
         onChange={onChange}
       />
-      {logo && <img height="24" width="24" src={logo} alt={title} />}
+      {logo && <img height="30" width="40" src={logo} alt={title} />}
     </div>
   );
 }

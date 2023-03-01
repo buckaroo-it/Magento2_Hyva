@@ -8,25 +8,15 @@ import GiftcardItem from './GiftcardItem';
 import { showAsList, availableGiftcards } from './helpers';
 import { usePlaceOrder } from './usePlaceOrder';
 import { useSelectGiftcard } from './hooks';
-import paymentEvent from './helpers/partialPayment';
 
 function Giftcards({ method, selected, actions }) {
   const isSelected = method.code === selected.code;
   const { registerPaymentAction } = useCheckoutFormContext();
   const defaultGiftcardCode = '';
   const [giftcardCode, setGiftcardCode] = useState(defaultGiftcardCode);
-  const [canPlaceOrder, setCanPlaceOrder] = useState(false);
 
-  const placeOrderWithGiftcards = usePlaceOrder(giftcardCode, canPlaceOrder);
+  const placeOrderWithGiftcards = usePlaceOrder(giftcardCode);
   const giftcardCodeChange = useSelectGiftcard(method.code, setGiftcardCode);
-
-  useEffect(() => {
-    paymentEvent.subscribe((data) => {
-      setCanPlaceOrder(
-        data?.transactions !== undefined && data.transactions.length > 0
-      );
-    });
-  }, []);
 
   useEffect(() => {
     registerPaymentAction(method.code, placeOrderWithGiftcards);
