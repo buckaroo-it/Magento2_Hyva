@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
 import { set as _set } from 'lodash-es';
-import { object } from 'prop-types';
 import { __ } from '@hyva/react-checkout/i18n';
 
 import useAppContext from '@hyva/react-checkout/hook/useAppContext';
