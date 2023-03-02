@@ -9,6 +9,7 @@ import useCartContext from '@hyva/react-checkout/hook/useCartContext';
 import TextInput from '../../lib/helpers/components/TextInput';
 import usePlaceOrder from './usePlaceOrder';
 import { validationSchema } from './helpers';
+import useSetFormFullName from '../../lib/hooks/useSetFormFullName';
 
 function In3Form({ method }) {
   const { registerPaymentAction } = useCheckoutFormContext();
@@ -31,6 +32,8 @@ function In3Form({ method }) {
       cart?.shipping_address?.country
     ),
   });
+
+  useSetFormFullName(formik);
 
   const placeOrder = usePlaceOrder(method.code, formik);
 

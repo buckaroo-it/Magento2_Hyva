@@ -9,6 +9,7 @@ import useCartContext from '@hyva/react-checkout/hook/useCartContext';
 import TextInput from '../../lib/helpers/components/TextInput';
 import usePlaceOrder from './usePlaceOrder';
 import { validationSchema } from './helpers';
+import useSetFormFullName from '../../lib/hooks/useSetFormFullName';
 
 function TinkaForm({ method }) {
   const { registerPaymentAction } = useCheckoutFormContext();
@@ -24,6 +25,7 @@ function TinkaForm({ method }) {
     validationSchema: validationSchema(showDob),
   });
 
+  useSetFormFullName(formik);
   const placeOrder = usePlaceOrder(method.code, formik);
 
   useEffect(() => {
