@@ -10,6 +10,7 @@ import SelectInput from '../../lib/helpers/components/SelectInput';
 import TextInput from '../../lib/helpers/components/TextInput';
 import usePlaceOrder from './usePlaceOrder';
 import { validationSchema, getGenderList } from './helpers';
+import useUpdateFormFields from './useUpdateFormFields';
 
 function PayPerEmailForm({ method }) {
   const { registerPaymentAction } = useCheckoutFormContext();
@@ -23,6 +24,8 @@ function PayPerEmailForm({ method }) {
     },
     validationSchema,
   });
+
+  useUpdateFormFields(formik);
 
   const placeOrder = usePlaceOrder(method.code, formik);
 
