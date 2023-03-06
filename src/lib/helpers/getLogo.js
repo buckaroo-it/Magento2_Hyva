@@ -20,6 +20,7 @@ const logos = {
   emandate: 'emandate.png',
   pospayment: 'pos.png',
   transfer: 'sepa-credittransfer',
+  voucher: 'vouchers',
 };
 
 export default function getLogo(methodCode) {
@@ -27,10 +28,6 @@ export default function getLogo(methodCode) {
 
   if (logoName in logos) {
     logoName = logos[logoName];
-  }
-
-  if (logoName === 'voucher') {
-    return undefined;
   }
 
   return `${logoPath}/${logoName}.svg`;
