@@ -1,4 +1,6 @@
 import { useCallback } from 'react';
+import { set } from 'lodash-es';
+
 import { useFormikContext } from 'formik';
 
 import usePlaceOrder from '@hyva/react-checkout/components/placeOrder/hooks/usePlaceOrder';
@@ -18,7 +20,7 @@ export default function usePlaceBuckarooOrder() {
 
   return useCallback(async () => {
     setMessage(false);
-
+    set(values, 'fromGiftcard', true);
     if (!isCartValid()) {
       return;
     }

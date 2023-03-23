@@ -1,7 +1,7 @@
 import { __ } from '@hyva/react-checkout/i18n';
 import { useFormikContext } from 'formik';
 import { useCallback } from 'react';
-import { get as _get, set } from 'lodash-es';
+import { get as _get } from 'lodash-es';
 
 import {
   LOGIN_FORM,
@@ -47,8 +47,6 @@ export function useValidateCart() {
       focusOnFormErrorElement(LOGIN_FORM, errors);
       return false;
     }
-
-    set(values, 'fromGiftcard', true);
 
     if (hasShippingAddressErrors(errors)) {
       setErrorMessage(__('Please provide your shipping address information.'));
