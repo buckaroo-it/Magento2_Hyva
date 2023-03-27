@@ -8,7 +8,7 @@ import {
   number,
   node,
 } from 'prop-types';
-import isObject from '../IsObject';
+import isObject from '../isObject';
 
 function SelectInput({
   name,
@@ -34,11 +34,12 @@ function SelectInput({
         {...inputProps}
       >
         {prependOption}
-        {options.map((option) => {
+        {options.map((option, index) => {
           if (isObject(option)) {
             const { name: optionName, value: optionValue } = option;
+            const key = index + optionValue;
             return (
-              <option key={optionValue} value={optionValue}>
+              <option key={key} value={optionValue}>
                 {optionName}
               </option>
             );

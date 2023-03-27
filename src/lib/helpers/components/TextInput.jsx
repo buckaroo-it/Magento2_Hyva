@@ -9,6 +9,16 @@ function TextInput({
   formik,
   inputProps = {},
 }) {
+  const getClassName = () => {
+    let formClassName = 'form-input w-full';
+    if (formik.touched[name] && formik.errors[name]) {
+      formClassName += ' border-red-500';
+    }
+    if (inputProps.disabled === 'disabled') {
+      formClassName += ' bg-gray-200';
+    }
+    return formClassName;
+  };
   return (
     <div className={`field my-2 ${className}`}>
       <div>
@@ -17,9 +27,7 @@ function TextInput({
         </label>
       </div>
       <input
-        className={`form-input w-full ${
-          formik.touched[name] && formik.errors[name] ? 'border-red-500' : ''
-        }`}
+        className={getClassName()}
         type={type}
         name={name}
         id={name}

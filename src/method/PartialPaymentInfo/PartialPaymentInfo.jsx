@@ -1,24 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import useCartContext from '@hyva/react-checkout/hook/useCartContext';
+import React from 'react';
 import { __ } from '@hyva/react-checkout/i18n';
 import { formatPrice } from '@hyva/react-checkout/utils/price';
+import useCartContext from '@hyva/react-checkout/hook/useCartContext';
+import usePartialPayment from '../../lib/hooks/usePartialPayment';
 
 function PartialPaymentInfo() {
-  const { cart } = useCartContext();
-
-  const [display, setDisplay] = useState(false);
-  useEffect(() => {
-    if (cart.partial_payment && cart.partial_payment.transactions.length) {
-      setDisplay(true);
-    }
-  }, [cart.partial_payment]);
-
-  if (display) {
-    const {
-      remainder_amount: remainderAmount,
-      already_paid: alreadyPaid,
-      transactions,
-    } = cart.partial_payment;
+  const { cartPartialPayment } = usePartialPayment();
+  const {
+    cart: {
+      prices: { grandTotalAmount },
+    },
+  } = useCartContext();
+  if ((cartPartialPayment?.transactions || []).length) {
+    const { already_paid: alreadyPaid, transactions } = cartPartialPayment;
     return (
       <>
         {transactions.map((transaction) => {
@@ -41,7 +35,7 @@ function PartialPaymentInfo() {
         <div className="pb-2 space-y-3 border-b">
           <div className="flex justify-between">
             <div className="font-bold">{__('Remaining amount')}</div>
-            <div>{formatPrice(remainderAmount)}</div>
+            <div>{formatPrice(grandTotalAmount - alreadyPaid)}</div>
           </div>
         </div>
       </>
