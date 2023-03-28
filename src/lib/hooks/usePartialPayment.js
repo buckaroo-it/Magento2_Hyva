@@ -83,8 +83,17 @@ export default function usePartialPayment() {
     }
   };
 
+  const fetchPartialPayment = async () => {
+    setCartInfo({
+      partialPayment: {
+        ...(await getGiftcardList(appDispatch)),
+      },
+    });
+  };
+
   return {
     cartPartialPayment,
     updatePartialPayment,
+    fetchPartialPayment,
   };
 }
