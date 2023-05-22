@@ -15,7 +15,13 @@ import usePlaceOrder from './usePlaceOrder';
 function Bancontact({ method, selected, actions }) {
   const isSelected = method.code === selected.code;
   const { registerPaymentAction } = useCheckoutFormContext();
-  const [clientSideMode, setClientSideMode] = useState('cc');
+
+  let defaultClientSideMode = 'mobile';
+  if (useClientSide) {
+    defaultClientSideMode = 'cc';
+  }
+
+  const [clientSideMode, setClientSideMode] = useState(defaultClientSideMode);
 
   const formik = useFormik({
     initialValues: {
