@@ -7,7 +7,7 @@ export const validationSchema = (showDob) =>
   YupObject({
     dob: YupString().when('showDob', {
       is: () => showDob,
-      then: YupString().required(requiredMessage),
-      otherwise: YupString(),
+      then: () => YupString().required(requiredMessage),
+      otherwise: () => YupString(),
     }),
   });

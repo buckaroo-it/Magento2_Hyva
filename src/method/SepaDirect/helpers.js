@@ -47,12 +47,13 @@ export const validationSchema = (isNotNL) => {
     bankAccountNumber: YupString()
       .required(requiredMessage)
       .bkValidateBankNumber(__('Please enter a valid account number')),
-    bic: YupString().when('isNotNL', {
+    bic: YupString().when([], {
       is: () => isNotNL,
-      then: YupString()
-        .required(requiredMessage)
-        .bkValidateBic(__('Please enter a valid bic number')),
-      otherwise: YupString(),
+      then: () =>
+        YupString()
+          .required(requiredMessage)
+          .bkValidateBic(__('Please enter a valid bic number')),
+      otherwise: () => YupString(),
     }),
   });
 };

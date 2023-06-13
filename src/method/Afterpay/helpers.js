@@ -91,13 +91,13 @@ export function prepareValidationSchema(cart) {
     tos: YupBool().oneOf([true], requiredMessage),
     identificationNumber: YupString().when('isCompany', {
       is: () => cart.billing_address.country === 'FI',
-      then: YupString().required(requiredMessage),
-      otherwise: YupString(),
+      then: () => YupString().required(requiredMessage),
+      otherwise: () => YupString(),
     }),
     coc: YupString().when('isb2b', {
       is: () => showCOC(cart),
-      then: YupString().required(requiredMessage),
-      otherwise: YupString(),
+      then: () => YupString().required(requiredMessage),
+      otherwise: () => YupString(),
     }),
   });
 }
