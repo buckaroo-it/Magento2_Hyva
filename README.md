@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://www.buckaroo.nl/media/3577/magento2_hyva_icon.png" width="200px" position="center">
+  <img src="https://github.com/buckaroo-it/Magento2_Hyva/assets/105488705/2bdf7c56-d2ce-44a8-a338-48e4e70b4996" width="200px" position="center">
 </p>
 
 # Buckaroo Magento2 Hyvä checkout extension
@@ -105,3 +105,4 @@ We would like to extend a special thank you to the developers at [Mooore](https:
 ### Additional information
 - **Support:** https://support.buckaroo.eu/contact
 - **Contact:** [support@buckaroo.nl](mailto:support@buckaroo.nl) or [+31 (0)30 711 50 50](tel:+310307115050)
+
