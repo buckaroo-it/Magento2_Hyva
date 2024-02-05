@@ -13,23 +13,23 @@ export const validationSchema = (showDob) => {
     tos: YupBool().oneOf([true], requiredMessage),
     coc: YupString().when('showB2b', {
       is: () => showB2b,
-      then: YupString().required(requiredMessage),
-      otherwise: YupString(),
+      then: () => YupString().required(requiredMessage),
+      otherwise: () => YupString(),
     }),
     phone: YupString().when('showB2b', {
       is: () => !showB2b,
-      then: YupString().required(requiredMessage),
-      otherwise: YupString(),
+      then: () => YupString().required(requiredMessage),
+      otherwise: () => YupString(),
     }),
     gender: YupString().when('showDob', {
       is: () => showDob,
-      then: YupString().required(requiredMessage),
-      otherwise: YupString(),
+      then: () => YupString().required(requiredMessage),
+      otherwise: () => YupString(),
     }),
     dob: YupString().when('showDob', {
       is: () => showDob,
-      then: YupString().required(requiredMessage),
-      otherwise: YupString(),
+      then: () => YupString().required(requiredMessage),
+      otherwise: () => YupString(),
     }),
   });
 };

@@ -138,8 +138,9 @@ export function prepareValidationSchema(cart, paymentMethod) {
   return YupObject({
     telephone: YupString().when('canShowPhone', {
       is: () => canShowPhone(cart),
-      then: YupString().required(requiredMessage).bkOnlyNumeric(onlyNumeric),
-      otherwise: YupString(),
+      then: () =>
+        YupString().required(requiredMessage).bkOnlyNumeric(onlyNumeric),
+      otherwise: () => YupString(),
     }),
     dob: YupString()
       .required(requiredMessage)
@@ -148,20 +149,22 @@ export function prepareValidationSchema(cart, paymentMethod) {
     businessType: YupString().oneOf(['b2b', 'b2c'], requiredMessage),
     coc: YupString().when('aaa', {
       is: () => isDigiAccept(paymentMethod),
-      then: YupString().required(requiredMessage).bkOnlyNumeric(onlyNumeric),
-      otherwise: YupString(),
+      then: () =>
+        YupString().required(requiredMessage).bkOnlyNumeric(onlyNumeric),
+      otherwise: () => YupString(),
     }),
     iban: YupString().when('businessType', {
       is: (fields) => isB2B(paymentMethod, fields),
-      then: YupString()
-        .required(requiredMessage)
-        .bkValidateBankNumber(__('Please enter a valid account number')),
-      otherwise: YupString(),
+      then: () =>
+        YupString()
+          .required(requiredMessage)
+          .bkValidateBankNumber(__('Please enter a valid account number')),
+      otherwise: () => YupString(),
     }),
     companyName: YupString().when('businessType', {
       is: (fields) => isB2B(paymentMethod, fields),
-      then: YupString().required(requiredMessage),
-      otherwise: YupString(),
+      then: () => YupString().required(requiredMessage),
+      otherwise: () => YupString(),
     }),
   });
 }

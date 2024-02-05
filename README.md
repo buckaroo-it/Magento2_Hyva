@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://www.buckaroo.nl/media/3577/magento2_hyva_icon.png" width="200px" position="center">
+  <img src="https://github.com/buckaroo-it/Magento2_Hyva/assets/105488705/2bdf7c56-d2ce-44a8-a338-48e4e70b4996" width="200px" position="center">
 </p>
 
 # Buckaroo Magento2 Hyvä checkout extension
@@ -85,6 +85,13 @@ Currently not all payment methods are supported in our Magento 2 Hyvä checkout 
 We really appreciate it when developers contribute to improve the Buckaroo plugins.
 If you want to contribute as well, then please follow our [Contribution Guidelines](CONTRIBUTING.md).
 
+> ### Community is the :green_heart: of open source
+> Developing beautiful products is not possible without the input of a community. We thank everyone who actively contributes to this.
+> 
+> [![ennostuurman's avatar](https://github.com/ennostuurman.png?size=50)](https://github.com/ennostuurman) [![rajeev-k-tomy's avatar](https://github.com/rajeev-k-tomy.png?size=50)](https://github.com/rajeev-k-tomy) [![poespas's avatar](https://github.com/poespas.png?size=50)](https://github.com/poespas) [![marissennet's avatar](https://github.com/marissennet.png?size=50)](https://github.com/marissennet) ![mgroensmit's avatar](https://avatars.githubusercontent.com/u/63691247?s=50)
+
+We would like to extend a special thank you to the developers at [Mooore](https://www.mooore.nl/) who have been co-developing with us on this project and were the initiators of this collaboration. Your hard work, dedication, and expertise have been invaluable in bringing this project to life. We couldn't have done it without you. Thank you! :raised_hands:
+
 ### Versioning 
 <p align="left">
   <img src="https://www.buckaroo.nl/media/3480/magento_versioning.png" width="500px" position="center">
@@ -98,3 +105,4 @@ If you want to contribute as well, then please follow our [Contribution Guidelin
 ### Additional information
 - **Support:** https://support.buckaroo.eu/contact
 - **Contact:** [support@buckaroo.nl](mailto:support@buckaroo.nl) or [+31 (0)30 711 50 50](tel:+310307115050)
+

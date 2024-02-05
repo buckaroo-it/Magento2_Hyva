@@ -67,12 +67,13 @@ export const validationSchema = (showPhone, country) =>
     dob: YupString().required(requiredMessage),
     phone: YupString().when('showPhone', {
       is: () => showPhone,
-      then: YupString()
-        .required(requiredMessage)
-        .bkValidatePhone({
-          errorMessage: __('Phone number should be correct.'),
-          country,
-        }),
-      otherwise: YupString(),
+      then: () =>
+        YupString()
+          .required(requiredMessage)
+          .bkValidatePhone({
+            errorMessage: __('Phone number should be correct.'),
+            country,
+          }),
+      otherwise: () => YupString(),
     }),
   });
