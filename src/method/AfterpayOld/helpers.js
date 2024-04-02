@@ -95,8 +95,7 @@ export function canShowPhone(cart) {
 }
 
 const getConfigValue = (paymentMethod) => {
-  const code = paymentMethod.replace('buckaroo_magento2_', '');
-  return getConfig(code) || {};
+  return getConfig(paymentMethod) || {};
 };
 
 export function isAcceptgiro(paymentMethod) {

@@ -7,7 +7,7 @@ export const validationSchema = YupObject({
   gender: YupString().required(__('Please select a gender')),
 });
 
-const config = getConfig('klarna') || {};
+const config = getConfig('buckaroo_magento2_klarna') || {};
 
 const mapGenders = (genderObject) => ({
   name: genderObject.genderTitle,

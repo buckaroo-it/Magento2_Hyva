@@ -8,7 +8,7 @@ import {
 import { __ } from '@hyva/react-checkout/i18n';
 import { getConfig } from '../../../config';
 
-const config = getConfig('afterpay20') || {};
+const config = getConfig('buckaroo_magento2_afterpay20') || {};
 
 const calculateAge = (specifiedDate) => {
   if (specifiedDate && specifiedDate.length > 0) {

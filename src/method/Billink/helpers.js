@@ -3,7 +3,7 @@ import { __ } from '@hyva/react-checkout/i18n';
 import { getConfig } from '../../../config';
 
 const requiredMessage = __('This is a required field.');
-const config = getConfig('billink') || {};
+const config = getConfig('buckaroo_magento2_billink') || {};
 
 export const isB2b = () => config?.b2b === true;
 

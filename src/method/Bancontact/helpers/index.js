@@ -8,4 +8,4 @@ export const yearStart = new Date().getFullYear();
 export const range = (size, startAt = 0) =>
   [...Array(size).keys()].map((i) => i + startAt);
 
-export const useClientSide = getConfig('mrcash.useClientSide') === 1;
+export const useClientSide = getConfig('buckaroo_magento2_mrcash.useClientSide') === 1;

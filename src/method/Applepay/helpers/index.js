@@ -8,7 +8,7 @@ import getLineItems from './getLineItems';
 import useCaptureFunds from './captureFunds';
 import { getConfig } from '../../../../config';
 
-const config = getConfig('applepay') || {};
+const config = getConfig('buckaroo_magento2_applepay') || {};
 
 const useGetPayOptions = () => {
   const { cart } = useCartContext();

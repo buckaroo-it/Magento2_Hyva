@@ -1,7 +1,7 @@
 import determineIssuer from './determineIssuer';
 import { getConfig } from '../../../../config';
 
-const creditCardsConfig = getConfig('creditcards') || {};
+const creditCardsConfig = getConfig('buckaroo_magento2_creditcards') || {};
 
 const mapIssuer = (issuer) => ({
   name: issuer.name,

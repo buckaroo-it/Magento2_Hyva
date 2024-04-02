@@ -11,7 +11,7 @@ export const validationSchema = YupObject({
   gender: YupString().required(requiredMessage),
 });
 
-const config = getConfig('payperemail') || {};
+const config = getConfig('buckaroo_magento2_payperemail') || {};
 
 const mapGenders = (genderObject) => ({
   name: genderObject.genderTitle,

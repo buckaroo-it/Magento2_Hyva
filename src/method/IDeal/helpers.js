@@ -7,7 +7,7 @@ export const validationSchema = YupObject({
   issuer: YupString().required(__('Please select a bank')),
 });
 
-const config = getConfig('ideal') || {};
+const config = getConfig('buckaroo_magento2_ideal') || {};
 
 const mapIssuer = (origIssuer) => ({
   name: origIssuer.name,

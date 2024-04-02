@@ -4,7 +4,7 @@ import { __ } from '@hyva/react-checkout/i18n';
 
 import { getConfig } from '../../../config';
 
-const { selectionType, cards } = getConfig('creditcard');
+const { selectionType, cards } = getConfig('buckaroo_magento2_creditcard');
 
 const getCards = () => {
   if (Array.isArray(cards)) {
