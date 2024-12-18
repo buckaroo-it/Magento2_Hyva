@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/buckaroo-it/Magento2_Hyva/assets/105488705/2bdf7c56-d2ce-44a8-a338-48e4e70b4996" width="200px" position="center">
+  <img src="https://www.buckaroo.nl/media/iyvnqp2k/magento2_hyvareactcheckout_icon.png" width="200px" position="center">
 </p>
 
 # Buckaroo Magento2 Hyvä checkout extension
