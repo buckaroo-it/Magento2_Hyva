@@ -6,9 +6,8 @@ import { useFormik } from 'formik';
 import useCheckoutFormContext from '@hyva/react-checkout/hook/useCheckoutFormContext';
 
 import PaymentMethodRadio from '../../lib/helpers/components/PaymentMethodRadio';
-import SelectInput from '../../lib/helpers/components/SelectInput';
 import usePlaceOrder from './usePlaceOrder';
-import { getIssuers, validationSchema } from './helpers';
+import { validationSchema } from './helpers';
 
 function IDeal({ method, selected, actions }) {
   const isSelected = method.code === selected.code;
@@ -36,17 +35,6 @@ function IDeal({ method, selected, actions }) {
       />
       {isSelected && (
         <div className="content py-2 pl-6">
-          <SelectInput
-            name="issuer"
-            label={__('Bank')}
-            formik={formik}
-            prependOption={
-              <option disabled value="">
-                {__('Select a bank')}
-              </option>
-            }
-            options={getIssuers()}
-          />
           <p className="mt-2">
             {__("You'll be redirected to finish the payment.")}
           </p>
