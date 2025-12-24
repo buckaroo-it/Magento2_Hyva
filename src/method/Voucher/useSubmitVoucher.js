@@ -15,7 +15,7 @@ export default function useSubmitVoucher() {
     usePaymentMethodAppContext();
   const placeOrder = usePlaceBuckarooOrder();
 
-  const { updatePartialPayment } = usePartialPayment();
+  const { updatePartialPayment, fetchPartialPayment } = usePartialPayment();
 
   const isCartValid = useValidateCart();
   return useCallback(
@@ -46,6 +46,7 @@ export default function useSubmitVoucher() {
         response.forEach((error) => {
           setErrorMessage(error.message);
         });
+        fetchPartialPayment();
       } else {
         setErrorMessage('Cannot apply voucher');
       }
@@ -59,6 +60,7 @@ export default function useSubmitVoucher() {
       setErrorMessage,
       placeOrder,
       updatePartialPayment,
+      fetchPartialPayment,
       isCartValid,
     ]
   );

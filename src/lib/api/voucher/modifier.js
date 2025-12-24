@@ -5,5 +5,5 @@ export default function modifyPlaceOrder(result) {
   if (errors !== undefined) {
     return errors;
   }
-  return _get(result, 'data.buckarooProcessVoucherTransaction', errors);
+  return _get(result, 'data.buckarooProcessVoucherTransaction', {});
 }

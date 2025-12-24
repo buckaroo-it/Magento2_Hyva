@@ -14,7 +14,7 @@ export default function useOnGiftcardSubmit(giftcardCode) {
     usePaymentMethodAppContext();
   const { appDispatch } = useAppContext();
   const placeOrder = usePlaceBuckarooOrder();
-  const { updatePartialPayment } = usePartialPayment();
+  const { updatePartialPayment, fetchPartialPayment } = usePartialPayment();
   const isCartValid = useValidateCart();
   return useCallback(
     async (values, { resetForm }) => {
@@ -48,6 +48,7 @@ export default function useOnGiftcardSubmit(giftcardCode) {
         response.forEach((error) => {
           setErrorMessage(error.message);
         });
+        fetchPartialPayment();
       } else {
         setErrorMessage('Cannot apply voucher');
       }
@@ -60,6 +61,7 @@ export default function useOnGiftcardSubmit(giftcardCode) {
       giftcardCode,
       placeOrder,
       updatePartialPayment,
+      fetchPartialPayment,
       isCartValid,
     ]
   );
