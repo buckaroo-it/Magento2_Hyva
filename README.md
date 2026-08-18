@@ -1,31 +1,64 @@
 <p align="center">
-  <img src="https://www.buckaroo.nl/media/iyvnqp2k/magento2_hyvareactcheckout_icon.png" width="200px" position="center">
+  <a href="https://www.buckaroo.nl">
+    <img src="https://raw.githubusercontent.com/buckaroo-it/Media/main/Buckaroo/README.md%20Headers/buckaroo-magento2-hyva-react-checkout-header-rounded.png" alt="Buckaroo — Hyvä React Checkout for Magento 2" width="100%">
+  </a>
 </p>
 
-# Buckaroo Magento2 Hyvä checkout extension
-Make payments on your Magento Hyvä SPA/PWA application using the Buckaroo plugin that integrates with the Hyvä checkout.
+<h1 align="center">Buckaroo Hyvä React Checkout module for Magento 2</h1>
 
-### Index
-- [Installation](#installation)
-- [Upgrade](#upgrade)
-- [Internationalization](#internationalization)
-- [Supported Payment Methods](#supported-payment-methods)
-- [Contribute](#contribute)
-- [Versioning](#versioning)
-- [Additional information](#additional-information)
+<p align="center">
+  <a href="https://docs.buckaroo.io/docs/magento-2-new-additional-modules-hyva-react-checkout-module"><img src="https://img.shields.io/badge/docs-docs.buckaroo.io-1a1a4b.svg" alt="Documentation"></a>
+  <a href="https://github.com/buckaroo-it/Magento2"><img src="https://img.shields.io/badge/requires-Buckaroo%20Magento%202-1a1a4b.svg" alt="Requires the Buckaroo Magento 2 plugin"></a>
+  <a href="https://github.com/buckaroo-it/Magento2_GraphQL"><img src="https://img.shields.io/badge/requires-Buckaroo%20GraphQL-1a1a4b.svg" alt="Requires the Buckaroo GraphQL module"></a>
+</p>
+
+<p align="center">
+  <a href="#about">About</a> &middot;
+  <a href="#requirements">Requirements</a> &middot;
+  <a href="#installation">Installation</a> &middot;
+  <a href="#upgrade">Upgrade</a> &middot;
+  <a href="#payment-methods">Payment methods</a> &middot;
+  <a href="#internationalization">Internationalization</a> &middot;
+  <a href="#support">Support</a> &middot;
+  <a href="#contribute">Contribute</a>
+</p>
+
 ---
 
-### Installation
+## About
 
-Before you start, please make sure that you've installed the following plugins in your Magento 2 environment:
+This module adds Buckaroo payment support to the [Hyvä](https://www.hyva.io/) React Checkout, so customers can pay on a Magento SPA or PWA storefront.
 
-- [Hyvä CheckoutExample Module Template](https://github.com/hyva-themes/magento2-checkout-example)  or  [Hyvä Themes - React Checkout](https://github.com/hyva-themes/magento2-react-checkout)  codebase.
-- [Buckaroo Magento 2 Extension](https://github.com/buckaroo-it/Magento2)
-- [Buckaroo Magento 2 GraphQL Extension](https://github.com/buckaroo-it/Magento2_GraphQL)
+It is an extension of the [Buckaroo Magento 2 plugin](https://github.com/buckaroo-it/Magento2), not a replacement for it. The main plugin handles the payments, the [GraphQL module](https://github.com/buckaroo-it/Magento2_GraphQL) exposes them to the headless frontend, and this module renders them in the React checkout.
 
-**In reactapp/package.json of the Hyvä module, add this repository to the `paymentMethods` entry:**
+> [!IMPORTANT]
+> There are two Hyvä checkout products, and they need different modules. This repository is for **Hyvä React Checkout**. If you use **Hyvä Checkout**, install [Magento2_Hyva_Checkout](https://github.com/buckaroo-it/Magento2_Hyva_Checkout) instead.
 
-```
+Unlike the other Buckaroo modules, this one is not a Composer package. It is a payment method package for the React app, added through npm.
+
+[Full module documentation on docs.buckaroo.io](https://docs.buckaroo.io/docs/magento-2-new-additional-modules-hyva-react-checkout-module)
+
+---
+
+## Requirements
+
+Install and configure the following in your Magento 2 environment before you start:
+
+| Requirement | Notes |
+|---|---|
+| [Hyvä Checkout Example Module Template](https://github.com/hyva-themes/magento2-checkout-example) or [Hyvä React Checkout](https://github.com/hyva-themes/magento2-react-checkout) | The React checkout codebase this module plugs into |
+| [Buckaroo Magento 2 plugin](https://github.com/buckaroo-it/Magento2) | Handles the payments |
+| [Buckaroo GraphQL module](https://github.com/buckaroo-it/Magento2_GraphQL) | Exposes the payment methods to the headless frontend |
+
+You also need a Buckaroo account. Don't have one yet? [Request an account](https://www.buckaroo.nl/start).
+
+---
+
+## Installation
+
+Add this repository to the `paymentMethodsRepo` entry in the `reactapp/package.json` of your Hyvä module:
+
+```json
 "config": {
   "paymentMethodsRepo": {
     "buckaroo": "git@github.com:buckaroo-it/Magento2_Hyva.git"
@@ -33,71 +66,114 @@ Before you start, please make sure that you've installed the following plugins i
 },
 ```
 
-**Run `npm i` again to process the changes and `npm run build` to rebuild the app.**
+Then process the change and rebuild the app:
 
-In order to display the payment summary for partial payments using giftcards, you'll need copy (override) all the files & folders from: `Hyva/CheckoutExample/reactapp/src/paymentMethods/buckaroo/src/lib/overrides` to `Hyva/CheckoutExample/reactapp/src`
+```bash
+npm i
+npm run build
+```
 
-### Upgrade
+<details>
+<summary>Showing the payment summary for partial giftcard payments</summary>
 
-To update the plugin you just need to use git to fetch the latest changes from GitHub, after that you build the react app again using npm
+To display the payment summary when part of an order is paid with a giftcard, copy (override) all files and folders from:
 
-`cd Hyva/CheckoutExample/reactapp/src/paymentMethods/buckaroo`
+```
+Hyva/CheckoutExample/reactapp/src/paymentMethods/buckaroo/src/lib/overrides
+```
 
-`git pull`
+to:
 
-`cd Hyva/CheckoutExample/reactapp`
+```
+Hyva/CheckoutExample/reactapp/src
+```
 
-`npm run build`
-
-### Internationalization
-A csv file with the translation strings can be found in the `i18n` folder, you can use this file to add translation to the Hyvä module using the default internationalization functionality provided by Hyvä - [ Internationalization Docs](https://hyva-themes.github.io/magento2-react-checkout/i18n/).
+</details>
 
 ---
-### Supported Payment Methods
-Currently not all payment methods are supported in our Magento 2 Hyvä checkout extension. A list of all supported payment methods can be found below:
-- [Alipay](https://docs.buckaroo.io/docs/alipay-1)
-- [Apple Pay](https://docs.buckaroo.io//docs/apple-pay)
-- [Bancontact](https://docs.buckaroo.io//docs/bancontact)
-- [Belfius](https://docs.buckaroo.io/docs/belfius)
-- [Billink](https://docs.buckaroo.io/docs/billink)
-- [Creditcards](https://docs.buckaroo.io/docs/creditcards)
-- [EPS](https://docs.buckaroo.io/docs/eps)
-- [Giftcards](https://docs.buckaroo.io/docs/giftcards)
-- [iDEAL](https://docs.buckaroo.io/docs/ideal)
-- [In3](https://docs.buckaroo.io/docs/in3)
-- [KBC](https://docs.buckaroo.io/docs/kbc)
-- [Klarna](https://docs.buckaroo.io/docs/klarna)
-- [PayPal](https://docs.buckaroo.io/docs/paypal)
-- [PayPerEmail](https://docs.buckaroo.io/docs/payperemail)
-- [Riverty / AfterPay](https://docs.buckaroo.io/docs/afterpay)
-- [SEPA Credit transfer (Bank transfer)](https://docs.buckaroo.io/docs/transfer)
-- [SEPA Direct Debit](https://docs.buckaroo.io/docs/sepa-direct-debit)
-- [Trustly](https://docs.buckaroo.io/docs/trustly)
-- [Buckaroo Voucher](https://docs.buckaroo.io/docs/buckaroo-voucher)
-- [WeChatPay](https://docs.buckaroo.io/docs/wechatpay)
 
-### Contribute
-We really appreciate it when developers contribute to improve the Buckaroo plugins.
-If you want to contribute as well, then please follow our [Contribution Guidelines](CONTRIBUTING.md).
+## Upgrade
 
-> ### Community is the :green_heart: of open source
-> Developing beautiful products is not possible without the input of a community. We thank everyone who actively contributes to this.
-> 
-> [![ennostuurman's avatar](https://github.com/ennostuurman.png?size=50)](https://github.com/ennostuurman) [![rajeev-k-tomy's avatar](https://github.com/rajeev-k-tomy.png?size=50)](https://github.com/rajeev-k-tomy) [![poespas's avatar](https://github.com/poespas.png?size=50)](https://github.com/poespas) [![marissennet's avatar](https://github.com/marissennet.png?size=50)](https://github.com/marissennet) ![mgroensmit's avatar](https://avatars.githubusercontent.com/u/63691247?s=50)
+Fetch the latest changes with git, then rebuild the React app:
 
-We would like to extend a special thank you to the developers at [Mooore](https://www.mooore.nl/) who have been co-developing with us on this project and were the initiators of this collaboration. Your hard work, dedication, and expertise have been invaluable in bringing this project to life. We couldn't have done it without you. Thank you! :raised_hands:
+```bash
+cd Hyva/CheckoutExample/reactapp/src/paymentMethods/buckaroo
+git pull
+cd Hyva/CheckoutExample/reactapp
+npm run build
+```
 
-### Versioning 
-<p align="left">
-  <img src="https://www.buckaroo.nl/media/3480/magento_versioning.png" width="500px" position="center">
+> [!TIP]
+> Always test an upgrade on a staging environment first.
+
+---
+
+## Payment methods
+
+Payment methods are enabled and configured in the main Buckaroo plugin, under **Stores → Configuration → Sales → Buckaroo** in the Magento admin.
+
+> [!IMPORTANT]
+> Not every method the main plugin supports is available in this checkout. The methods below are the ones this module renders.
+
+| | | |
+|---|---|---|
+| [Alipay](https://docs.buckaroo.io/docs/alipay) | [Apple Pay](https://docs.buckaroo.io/docs/apple-pay) | [Bancontact](https://docs.buckaroo.io/docs/bancontact) |
+| [Bank Transfer](https://docs.buckaroo.io/docs/transfer) | [Belfius](https://docs.buckaroo.io/docs/belfius) | [Billink](https://docs.buckaroo.io/docs/billink) |
+| [Buckaroo Voucher](https://docs.buckaroo.io/docs/buckaroo-voucher) | [Credit and debit cards](https://docs.buckaroo.io/docs/creditcards) | [EPS](https://docs.buckaroo.io/docs/eps) |
+| [Giftcards](https://docs.buckaroo.io/docs/giftcards) | [iDEAL / Wero](https://docs.buckaroo.io/docs/ideal) | [In3](https://docs.buckaroo.io/docs/in3) |
+| [KBC](https://docs.buckaroo.io/docs/kbc) | [Klarna](https://docs.buckaroo.io/docs/klarna-kp) | [PayPal](https://docs.buckaroo.io/docs/paypal) |
+| [PayPerEmail](https://docs.buckaroo.io/docs/payperemail) | [Riverty](https://docs.buckaroo.io/docs/riverty) | [SEPA Direct Debit](https://docs.buckaroo.io/docs/sepa-direct-debit) |
+| [Trustly](https://docs.buckaroo.io/docs/trustly) | [WeChatPay](https://docs.buckaroo.io/docs/wechatpay) |  |
+
+---
+
+## Internationalization
+
+The [`i18n`](https://github.com/buckaroo-it/Magento2_Hyva/tree/master/i18n) folder contains a CSV file with the translation strings. Add translations through the standard Hyvä internationalization mechanism — see the [Hyvä i18n documentation](https://hyva-themes.github.io/magento2-react-checkout/i18n/).
+
+---
+
+## Support
+
+Having trouble? Work through this list before reaching out:
+
+1. Confirm the [main plugin](https://github.com/buckaroo-it/Magento2) and the [GraphQL module](https://github.com/buckaroo-it/Magento2_GraphQL) are both installed and active, and that payments work outside the React checkout.
+2. Check that you installed the right module for your checkout — this one for Hyvä React Checkout, [Magento2_Hyva_Checkout](https://github.com/buckaroo-it/Magento2_Hyva_Checkout) for Hyvä Checkout.
+3. Confirm the method you are testing is in the list above.
+4. Rebuild the React app with `npm run build` after any change, and check the browser console for errors.
+
+Still stuck? Contact us and include your Magento version, main plugin version, GraphQL module version, the React checkout codebase you use and the relevant console or log output.
+
+- **Bug reports and feature requests:** [open an issue](https://github.com/buckaroo-it/Magento2_Hyva/issues)
+- **Technical support:** [support@buckaroo.nl](mailto:support@buckaroo.nl)
+- **Phone:** +31 (0)30 711 50 50
+- **Gateway status:** [status.buckaroo.io](https://status.buckaroo.io/)
+
+---
+
+## Contribute
+
+We really appreciate it when developers help improve the Buckaroo plugins. Please read our [Contribution Guidelines](https://github.com/buckaroo-it/Magento2_Hyva/blob/master/CONTRIBUTING.md) before opening a pull request, and target the `master` branch.
+
+Found a security issue? Please report it privately to [support@buckaroo.nl](mailto:support@buckaroo.nl) instead of opening a public issue.
+
+### Community
+
+Developing good products is not possible without the input of a community, and we thank everyone who contributes. A special thank you to the developers at [Mooore](https://www.mooore.nl/), who co-developed this project with us and initiated the collaboration. Your work and expertise have been invaluable.
+
+---
+
+## Versioning
+
+We follow semantic versioning (`MAJOR.MINOR.PATCH`):
+
+- **MAJOR** — breaking changes that require additional testing and caution.
+- **MINOR** — new functionality with limited impact.
+- **PATCH** — bug fixes and hotfixes only.
+
+---
+
+<p align="center">
+  <sub>Made with care by <a href="https://www.buckaroo.nl">Buckaroo</a>.<br>
+  This document is subject to change; typos and language errors are possible.</sub>
 </p>
-
-- **MAJOR:** Breaking changes that require additional testing/caution.
-- **MINOR:** Changes that should not have a big impact.
-- **PATCHES:** Bug and hotfixes only.
-
-
-### Additional information
-- **Support:** https://support.buckaroo.eu/contact
-- **Contact:** [support@buckaroo.nl](mailto:support@buckaroo.nl) or [+31 (0)30 711 50 50](tel:+310307115050)
-
