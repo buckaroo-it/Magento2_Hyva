@@ -155,7 +155,7 @@ Still stuck? Contact us and include your Magento version, main plugin version, G
 
 ## Contribute
 
-We really appreciate it when developers help improve the Buckaroo plugins. Please read our [Contribution Guidelines](https://github.com/buckaroo-it/Magento2_Hyva/blob/master/CONTRIBUTING.md) before opening a pull request, and target the `master` branch.
+We really appreciate it when developers help improve the Buckaroo plugins. Please read our [Contribution Guidelines](https://github.com/buckaroo-it/Magento2_Hyva/blob/master/CONTRIBUTING.md) before opening a pull request, and target the `develop` branch.
 
 Found a security issue? Please report it privately as described in our [Security Policy](SECURITY.md) instead of opening a public issue.
 
